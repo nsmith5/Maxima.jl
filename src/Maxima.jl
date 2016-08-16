@@ -1,5 +1,9 @@
 module Maxima
 
-# package code goes here
+include("server.jl")
+include("mexpr.jl")
+include("io.jl")
+include("simplify.jl")
+include("calculus.jl")
 
 end # module
