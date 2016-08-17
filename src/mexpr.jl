@@ -19,10 +19,10 @@ macro maxima(str)
 end
 
 const m_to_jl = Dict("%e" => "e",
-    "%pi"   =>  "pi",
+    "%pi"   =>  "π",
     "%i"    =>  "im",
     "%gamma" => "eulergamma",
-    "%phi"  =>  "golden",
+    "%phi"  =>  "φ",
     "inf"   =>  "Inf",
     "minf"  =>  "-Inf")
 
