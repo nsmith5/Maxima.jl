@@ -7,7 +7,7 @@ import Base: string,
 string(m::MExpr) = m.str
 show(io::IO, m::MExpr) = print(io, m.str)
 
-function show(io::IO, ::MIME"text/plain", m::MExpr)
+@compat function show(io::IO, ::MIME"text/plain", m::MExpr)
     mcall(m"display2d: true")
 	input("'($m);")
 	str = output()
@@ -16,7 +16,7 @@ function show(io::IO, ::MIME"text/plain", m::MExpr)
 	print(io, str)
 end
 
-function show(io::IO, ::MIME"text/latex", m::MExpr)
+@compat function show(io::IO, ::MIME"text/latex", m::MExpr)
     input("tex('($m))\$")
     texstr = output()
     print(io, texstr)
