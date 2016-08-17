@@ -13,7 +13,7 @@ hang because it opens too many files in the search for an open port.
 function connect(port)
     try
         server = listen(port)
-        return server
+        return server, port
     catch err
         connect(port + 1)
     end
@@ -46,7 +46,7 @@ end
 Start up a maxima client-server pair trying port `port` first.
 """
 function startserver(port)
-    server = connect(port)
+    server, port = connect(port)
     socketrequest = @spawn accept(server)
     clientrequest = @spawn run(`
         maxima --server=$port --very-quiet
