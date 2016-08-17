@@ -60,7 +60,7 @@ function parse(m::MExpr)
 end
 
 function mcall(m::MExpr)
-    put!(inputchannel, "$(m.str);\n")
+    put!(inputchannel, "$(m.str);")
     output = take!(outputchannel)
     output = replace(output, '\n', "")
     output = replace(output, " ", "")
