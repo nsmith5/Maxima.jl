@@ -55,12 +55,12 @@ function startserver(port)
 
     readavailable(socket)
     stopchar = Char(4)
-
+    println("Hello!")
     while true
         input = take!(inputchannel)
         write(socket, input)
 		char = read(socket, Char)
-		write(socket, "print(ascii(4))\$")
+		write(socket, "print(ascii(4))\$\n")
 		str = string(char)
 		while char != stopchar
 			char = read(socket, Char)

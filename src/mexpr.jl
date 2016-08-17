@@ -38,7 +38,7 @@ const jl_to_m = Dict("e" => "%e",
     "Inf" => "inf")
 
 function _subst(a, b, expr)
-    mstr = "subst($a, $b, $expr)" |> MExpr
+    mstr = "subst($a, $b, '($expr))" |> MExpr
 	mstr = mcall(mstr)
 	return mstr.str
 end
@@ -60,39 +60,10 @@ function parse(m::MExpr)
 end
 
 function mcall(m::MExpr)
-    put!(inputchannel, "$(m.str);")
+    put!(inputchannel, "$(m.str);\n")
     output = take!(outputchannel)
     output = replace(output, '\n', "")
     output = replace(output, " ", "")
 	MExpr(output)
 end
 
-#------------------------------------------------------
-#           Experimental Work
-
-const m_to_jl2 = Dict(
-    "i"    =>  "im",
-    "gamma" => "eulergamma",
-    "phi"  =>  "golden",
-    "inf"   =>  "Inf",
-    "minf"  =>  "-Inf")
-
-function subst2(a, b, c)
-    if b == c
-        return a
-    elseif isa(c, Expr)
-        expr = copy(c)
-        for i in 1:length(c.args)
-            expr.args[i] = subst(a, b, expr.args[i])
-        end
-        return expr
-    else
-        return c
-    end
-end
-
-function parse2(m::MExpr)
-    str = m.str
-    str = replace(str, "%", "")
-    # TODO finish this parser... What happens if there are variable named
-end
