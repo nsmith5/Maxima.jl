@@ -1,8 +1,10 @@
 import Base: LineEdit, REPL, REPLCompletions
 
+
 function __init__()
+    # Start up the Repl if we're in interactive mode
 	isdefined(Base, :active_repl) && isinteractive() && repl_init(Base.active_repl)
-	return
+	return nothing
 end
 
 """
@@ -12,7 +14,9 @@ return_callback examines the buffer in the repl to see if the input is complete
 """
 function return_callback(s)
     str = Compat.String(LineEdit.buffer(s))
-	if str[end] == ';' || str[end] == '$'
+    if length(str) == 0
+        return false
+	elseif str[end] == ';' || str[end] == '$'
 		return true
 	else
 		return false
@@ -20,20 +24,9 @@ function return_callback(s)
 end
 
 """
-	repl_eval(input::String, stdout::IO, stderr::IO)
-
-Do what you want to do with the input now that you've got it
-"""
-function repl_eval(input::Compat.String, stdout::IO, stderr::IO)
-    show(stdout, "Hello!")
-	REPL.print_response()
-    return nothing
-end
-
-"""
 	respond(repl, main)
 
-Something dark and magic	
+Something dark and magic
 """
 function respond(repl, main)
     (s, buf, ok) -> begin
