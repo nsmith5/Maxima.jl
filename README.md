@@ -4,9 +4,7 @@
 
 [![codecov.io](http://codecov.io/github/nsmith5/Maxima.jl/coverage.svg?branch=master)](http://codecov.io/github/nsmith5/Maxima.jl?branch=master)
 
-# Maxima 
-
----
+# Maxima.jl 
 
 Maxima.jl is a tool for symbolic computation in Julia using the Maxima computer algebra system.
 
