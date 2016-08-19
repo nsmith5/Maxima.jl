@@ -6,6 +6,7 @@ import Compat.String
 include("server.jl")
 include("mexpr.jl")
 include("io.jl")
+include("repl.jl")
 include("simplify.jl")
 include("calculus.jl")
 
