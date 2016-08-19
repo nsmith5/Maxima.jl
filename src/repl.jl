@@ -37,7 +37,11 @@ function respond(repl, main)
         if !isempty(strip(input))
 			output = MExpr(input[1:end-1]) |> mcall
             REPL.reset(repl)
-			REPL.print_response(repl, output, nothing, true, Base.have_color)
+            if input[end] == ';'
+			    REPL.print_response(repl, output, nothing, true, Base.have_color)
+			else
+			    REPL.print_response(repl, nothing, nothing, true, Base.have_color)
+			end
         end
         REPL.prepare_next(repl)
         REPL.reset_state(s)
