@@ -1,5 +1,7 @@
 import Base: LineEdit, REPL, REPLCompletions
 
+ans = nothing
+
 """
 	finished(s)
 
@@ -27,11 +29,14 @@ function respond(repl, main)
             return REPL.transition(s, :abort)
         end
         input = takebuf_string(buf)
+        if '%' in input
+            input = replace(input, '%', "$ans")
+        end
         if !isempty(strip(input))
-			output = MExpr(input[1:end-1]) |> mcall
+			global ans = MExpr(input[1:end-1]) |> mcall
             REPL.reset(repl)
             if input[end] == ';'
-			    REPL.print_response(repl, output, nothing, true, Base.have_color)
+			    REPL.print_response(repl, ans, nothing, true, Base.have_color)
 			else
 			    REPL.print_response(repl, nothing, nothing, true, Base.have_color)
 			end
