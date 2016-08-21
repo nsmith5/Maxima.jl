@@ -80,14 +80,4 @@ Kill maxima client with `quit();` call from the server
 function killserver()
     input("quit();")
     return nothing
-end
-
-# ---------------------------------------------
-#   Start up the default server-client pair by
-#   (1) choosing a default port,
-#   (2) spawning the client-server pair and,
-#   (3) registering `killserver` to run on exit
-
-const defaultport = 8080
-@spawn startserver(defaultport)
-atexit(killserver)   
+end 

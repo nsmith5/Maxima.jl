@@ -1,12 +1,5 @@
 import Base: LineEdit, REPL, REPLCompletions
 
-
-function __init__()
-    # Start up the Repl if we're in interactive mode
-	isdefined(Base, :active_repl) && isinteractive() && repl_init(Base.active_repl)
-	return nothing
-end
-
 """
 	return_callback(s)
 
@@ -122,8 +115,3 @@ function repl_init(repl)
     main_mode.keymap_dict = LineEdit.keymap_merge(main_mode.keymap_dict, maxima_prompt_keymap);
     nothing
 end
-
-#-----------------------
-# init repl
-
-__init__()
