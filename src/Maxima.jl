@@ -9,6 +9,7 @@ include("io.jl")
 include("repl.jl")
 include("simplify.jl")
 include("calculus.jl")
+include("plot.jl")
 include("setup.jl")
 
 end # module

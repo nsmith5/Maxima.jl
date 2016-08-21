@@ -1,11 +1,11 @@
 import Base: LineEdit, REPL, REPLCompletions
 
 """
-	return_callback(s)
+	finished(s)
 
-return_callback examines the buffer in the repl to see if the input is complete
+Examine the buffer in the repl to see if the input is complete
 """
-function return_callback(s)
+function finished(s)
     str = Compat.String(LineEdit.buffer(s))
     if length(str) == 0
         return false
@@ -70,7 +70,7 @@ function create_maxima_repl(repl, main)
 	    "maxima> ";
         prompt_prefix = Base.text_colors[:cyan],
         prompt_suffix = main.prompt_suffix,
-        on_enter = return_callback,
+        on_enter = finished,
         on_done = respond(repl, main),
         sticky = true)
 
