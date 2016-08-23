@@ -1,6 +1,5 @@
 export MExpr,
        @m_str,
-	   @maxima,
        parse,
        mcall
 
@@ -11,10 +10,6 @@ type MExpr
 end
 
 macro m_str(str)
-	MExpr(str)
-end
-
-macro maxima(str)
 	MExpr(str)
 end
 
