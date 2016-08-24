@@ -72,7 +72,7 @@ end
 
 Evaluate a string as a Maxima expression
 """
-mcall(str::String) = str |> MExpr |> mcall
+mcall(str::Compat.String) = str |> MExpr |> mcall
 
 """
 	mcall(expr::Expr)
