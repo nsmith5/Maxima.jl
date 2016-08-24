@@ -54,6 +54,11 @@ function parse(m::MExpr)
     parse(str)
 end
 
+"""
+	mcall(m::MExpr)
+
+Evaluate a Maxima expression.
+"""
 function mcall(m::MExpr)
     put!(inputchannel, "$(m.str);")
     output = take!(outputchannel)
@@ -62,3 +67,16 @@ function mcall(m::MExpr)
 	MExpr(output)
 end
 
+"""
+	mcall(str::String)
+
+Evaluate a string as a Maxima expression
+"""
+mcall(str::String) = str |> MExpr |> mcall
+
+"""
+	mcall(expr::Expr)
+
+Translate a Julia expression into a Maxima expression then evaluate.
+"""
+mcall(expr::Expr) = expr |> MExpr |> mcall
