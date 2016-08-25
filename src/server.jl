@@ -1,5 +1,5 @@
-const inputchannel = Channel{String}(1)
-const outputchannel = Channel{String}(1)
+const inputchannel = Channel{Compat.String}(1)
+const outputchannel = Channel{Compat.String}(1)
 
 """
     connect(port)
@@ -25,7 +25,7 @@ end
 Pass a string to the maxima client. If the string is not a valid maxima
 expression this may hang.
 """
-function input(str::String)
+function input(str::Compat.String)
     put!(inputchannel, str)
     return nothing
 end
@@ -78,6 +78,7 @@ end
 Kill maxima client with `quit();` call from the server
 """
 function killserver()
-    input("quit();")
-    return nothing
+	input("quit();")
+	input(" ")			# Curiously, this line is important to insure the maxima client actually quit...
+	return nothing
 end 
