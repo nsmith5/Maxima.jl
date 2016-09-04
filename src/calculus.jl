@@ -148,7 +148,7 @@ function ilt(func::MExpr, oldvar, newvar)
     "ilt($func, $oldvar, $newvar" |> MExpr |> mcall
 end
 
-function ilt(func::T, oldvar, newvar)
+function ilt{T}(func::T, oldvar, newvar)
     m = MExpr(func)
     convert(T, "ilt($m, $oldvar, $newvar)" |> MExpr |> mcall)
 end
