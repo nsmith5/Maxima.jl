@@ -18,39 +18,39 @@ function integrate(m::MExpr, s)
     MExpr("integrate($m, $s)") |> mcall
 end
 
-function integrate(expr::Expr, s)
+function integrate{T}(expr::T, s)
     m = MExpr(expr)
     out = integrate(m, s)
-    parse(out)
+    convert(T, out)
 end
 
 function integrate(m::MExpr, s, lower::Number, upper::Number)
     MExpr("integrate($m, $s, $lower, $upper)") |> mcall
 end
 
-function integrate(expr::Expr, s::Symbol, lower::Number, upper::Number)
+function integrate{T}(expr::T, s, lower::Number, upper::Number)
     m = MExpr(expr)
     out = integrate(m, s, lower, upper)
-    parse(out)
+    convert(T, out)
 end
 
 function risch(m::MExpr, var)
     MExpr("risch($m, $var)") |> mcall
 end
 
-function risch(exp::Expr, var)
+function risch{T}(exp::T, var)
     m = MExpr(exp)
-    risch(m, var)
+    convert(T, risch(m, var))
 end
 
 function diff(m::MExpr, s)
     MExpr("diff($m, $s)") |> mcall
 end
 
-function diff(exp::Expr, s)
+function diff{T}(exp::T, s)
     m = MExpr(exp)
     out = diff(m, s)
-    parse(out)
+    convert(T, out)
 end
 
 function diff(m::MExpr, s, order::Integer)
@@ -60,20 +60,20 @@ function diff(m::MExpr, s, order::Integer)
     MExpr("diff($m, $s, $order)") |> mcall
 end
 
-function diff(exp::Expr, s::Symbol, order::Integer)
+function diff{T}(exp::T, s, order::Integer)
     m = MExpr(exp)
     out = diff(m, s, order)
-    parse(out)
+    convert(T, out)
 end
 
 function limit(m::MExpr, x, a)
     MExpr("limit($m, $x, $a)") |> mcall
 end
 
-function limit(exp::Expr, x::Symbol, a)
+function limit{T}(exp::T, x, a)
     m = MExpr(exp)
     out = limit(m, x, a)
-    parse(out)
+    convert(T)
 end
 
 function limit(m::MExpr, x, a, side)
@@ -83,20 +83,21 @@ function limit(m::MExpr, x, a, side)
     MExpr("limit($m, $x, $a, $side") |> mcall
 end
 
-function limit(exp::Expr, x::Symbol, a, side)
+function limit{T}(exp::T, x, a, side)
     m = MExpr(exp)
     out = limit(m, x, a, side)
-    parse(out)
+    convert(T, out)
 end
 
 function sum(m::MExpr, k, start, finish)
     MExpr("sum($m, $k, $start, $finish), simpsum") |> mcall
 end
 
-function sum(exp::Expr, k::Symbol, start, finish)
+function sum{T}(exp::T, k, start, finish)
     sumexp = parse("sum($exp, $k, $start, $finish)")
     m = MExpr(sumexp)
-    MExpr("$m, simpsum") |> mcall |> parse
+    out = mcall(MExpr("$m, simpsum"))
+    convert(T, out)
 end
 
 function taylor(m::MExpr, x, x0, order::Integer)
@@ -106,18 +107,19 @@ function taylor(m::MExpr, x, x0, order::Integer)
     MExpr("taylor($m, $x, $x0, $order)") |> mcall
 end
 
-function taylor(exp::Expr, x::Symbol, x0::Number, order::Integer)
+function taylor{T}(exp::T, x, x0::Number, order::Integer)
     m = MExpr(exp)
-    taylor(m, x, x0, order) |> parse
+    out = taylor(m, x, x0, order)
+    convert(T, out)
 end
 
 function product(m::MExpr, k, start, finish)
     MExpr("product($m, $k, $start, $finish), simpsum") |> mcall
 end
 
-function product(exp::Expr, k::Symbol, start, finish)
+function product{T}(exp::T, k, start, finish)
     sumexp = parse("product($exp, $k, $start, $finish)")
-    sumexp |> MExpr |> mcall |> parse
+    convert(T, sumexp |> MExpr |> mcall)a
 end
 
 function changevar(integral::MExpr, transform::MExpr, new, old)
@@ -137,17 +139,17 @@ function laplace(func::MExpr, oldvar, newvar)
     "laplace($func, $oldvar, $newvar)" |> MExpr |> mcall
 end
 
-function laplace(func::Expr, oldvar::Symbol, newvar::Symbol)
+function laplace{T}(func::T, oldvar, newvar)
     m = MExpr(func)
-    "laplace($m, $oldvar, $newvar)" |> MExpr |> mcall |> parse
+    convert(T, "laplace($m, $oldvar, $newvar)" |> MExpr |> mcall)
 end
 
 function ilt(func::MExpr, oldvar, newvar)
     "ilt($func, $oldvar, $newvar" |> MExpr |> mcall
 end
 
-function ilt(func::Expr, oldvar::Symbol, newvar::Symbol)
+function ilt(func::T, oldvar, newvar)
     m = MExpr(func)
-    "ilt($m, $oldvar, $newvar)" |> MExpr |> mcall |> parse
+    convert(T, "ilt($m, $oldvar, $newvar)" |> MExpr |> mcall)
 end
 

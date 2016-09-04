@@ -24,145 +24,122 @@ import Base: expand,
              factor,
              float
 
-ratsimp(m::MExpr) = "ratsimp($m)" |> MExpr |> mcall
-
-function ratsimp(exp::Expr)
-    m = MExpr(exp)
-    "ratsimp($m)" |> MExpr |> mcall |> parse
+function ratsimp{T}(expr::T)
+    mexpr = MExpr(expr)
+    out = mcall(MExpr("ratsimp($mexpr)"))
+    convert(T, out)
 end
 
-ratcan(m::MExpr) = "ratcan($m)" |> MExpr |> mcall
-
-function ratcan(exp::Expr)
-    m = MExpr(exp)
-    "ratcan($m)" |> MExpr |> mcall |> parse
+function ratcan{T}(expr::T)
+    mexpr = MExpr(expr)
+    out = mcall(MExpr("ratcan($mexpr)"))
+    convert(T, out)
 end
 
-factor(m::MExpr) = "factor($m)" |> MExpr |> mcall
-
-function factor(exp::Expr)
-    m = MExpr(exp)
-    "factor($m)" |> MExpr |> mcall |> parse
+function factor{T}(expr::T)
+    mexpr = MExpr(expr)
+    out = mcall(MExpr("factor($mexpr)"))
+    convert(T, out)
 end
 
-gfactor(m::MExpr) = "gfactor($m)" |> MExpr |> mcall
-
-function gfactor(exp::Expr)
-    m = MExpr(exp)
-    "gfactor($m)" |> MExpr |> mcall |> parse
+function gfactor{T}(expr::T)
+    mexpr = MExpr(expr)
+    out = mcall(MExpr("gfactor($mexpr)"))
+    convert(T, out)
 end
 
-expand(m::MExpr) = "expand($m)" |> MExpr |> mcall
-
-function expand(exp::Expr)
-    m = MExpr(exp)
-    "expand($m)" |> MExpr |> mcall |> parse
+function expand{T}(expr::T)
+    mexpr = MExpr(expr)
+    out = mcall(MExpr("expand($mexpr)"))
+    convert(T, out)
 end
 
-logcontract(m::MExpr) = "logcontract($m)" |> MExpr |> mcall
-
-function logcontract(exp::Expr)
-    m = MExpr(exp)
-    "logcontract($m)" |> MExpr |> mcall |> parse
+function logcontract{T}(expr::T)
+    mexpr = MExpr(expr)
+    out = mcall(MExpr("logcontract($mexpr)"))
+    convert(T, out)
 end
 
-makefact(m::MExpr) = "makefact($m)" |> MExpr |> mcall
-
-function makefact(exp::Expr)
-    m = MExpr(exp)
-    "makefact($m)" |> MExpr |> mcall |> parse
+function makefact{T}(expr::T)
+    mexpr = MExpr(expr)
+    out = mcall(MExpr("makefact($mexpr)"))
+    convert(T, out)
 end
 
-makegamma(m::MExpr) = "makegamma($m)" |> MExpr |> mcall
-
-function makegamma(exp::Expr)
-    m = MExpr(exp)
-    "makegamma($m)" |> MExpr |> mcall |> parse
+function makegamma{T}(expr::T)
+    mexpr = MExpr(expr)
+    out = mcall(MExpr("makegamma($mexpr)"))
+    convert(T, out)
 end
 
-trigsimp(m::MExpr) = "trigsimp($m)" |> MExpr |> mcall
-
-function trigsimp(exp::Expr)
-    m = MExpr(exp)
-    "trigsimp($m)" |> MExpr |> mcall |> parse
+function trigsimp{T}(expr::T)
+    mexpr = MExpr(expr)
+    out = mcall(MExpr("trigsimp($mexpr)"))
+    convert(T, out)
 end
 
-trigreduce(m::MExpr) = "trigreduce($m)" |> MExpr |> mcall
-
-function trigreduce(exp::Expr)
-    m = MExpr(exp)
-    "trigreduce($m)" |> MExpr |> mcall |> parse
+function trigreduce{T}(expr::T)
+    mexpr = MExpr(expr)
+    out = mcall(MExpr("trigreduce($mexpr)"))
+    convert(T, out)
 end
 
-trigexpand(m::MExpr) = "trigexpand($m)" |> MExpr |> mcall
-
-function trigexpand(exp::Expr)
-    m = MExpr(exp)
-    "trigexpand($m)" |> MExpr |> mcall |> parse
+function trigexpand{T}(expr::T)
+    mexpr = MExpr(expr)
+    out = mcall(MExpr("trigexpand($mexpr)"))
+    convert(T, out)
 end
 
-trigrat(m::MExpr) = "trigrat($m)" |> MExpr |> mcall
-
-function trigrat(exp::Expr)
-    m = MExpr(exp)
-    "trigrat($m)" |> MExpr |> mcall |> parse
+function trigrat{T}(expr::T)
+    mexpr = MExpr(expr)
+    out = mcall(MExpr("trigrat($mexpr)"))
+    convert(T, out)
 end
 
-recttform(m::MExpr) = "rectform($m)" |> MExpr |> mcall
-
-function rectform(exp::Expr)
-    m = MExpr(exp)
-    "rectform($m)" |> MExpr |> mcall |> parse
+function rectform{T}(expr::T)
+    mexpr = MExpr(expr)
+    out = mcall(MExpr("rectform($mexpr)"))
+    convert(T, out)
 end
 
-polarform(m::MExpr) = "polarform($m)" |> MExpr |> mcall
-
-function polarform(exp::Expr)
-    m = MExpr(exp)
-    "polarform($m)" |> MExpr |> mcall |> parse
+function polarform{T}(expr::T)
+    mexpr = MExpr(expr)
+    out = mcall(MExpr("polarform($mexpr)"))
+    convert(T, out)
 end
 
-function realpart(m::MExpr)
-    "realpart($m)" |> MExpr |> mcall
+function realpart{T}(expr::T)
+    mexpr = MExpr(expr)
+    out = mcall(MExpr("realpart($mexpr)"))
+    convert(T, out)
 end
 
-function realpart(exp::Expr)
-    m = MExpr(exp)
-    "realpart($m)" |> MExpr |> mcall |> parse
+function imagpart{T}(expr::T)
+    mexpr = MExpr(expr)
+    out = mcall(MExpr("imgpart($mexpr)"))
+    convert(T, out)
 end
 
-function imagpart(m::MExpr)
-    "imagpart($m)" |> MExpr |> mcall
+function demoivre{T}(expr::T)
+    mexpr = MExpr(expr)
+    out = mcall(MExpr("demoivre($mexpr)"))
+    convert(T, out)
 end
 
-function imagpart(exp::Expr)
-    m = MExpr(exp)
-    "imagpart($m)" |> MExpr |> mcall |> parse
+function exponentialize{T}(expr::T)
+    mexpr = MExpr(expr)
+    out = mcall(MExpr("exponentialize($mexpr)"))
+    convert(T, out)
 end
 
-function demoivre(m::MExpr)
-    "demoivre($m)" |> MExpr |> mcall
+function float{T}(expr::T)
+    mexpr = MExpr(expr)
+    out = mcall(MExpr("float($mexpr)"))
+    convert(T, out)
 end
 
-function demoivre(exp::Expr)
-    m = MExpr(exp)
-    "demoivre($m)" |> MExpr |> mcall |> parse
-end
-
-function exponentialize(m::MExpr)
-    "exponentialize($m)" |> MExpr |> mcall
-end
-
-function exponentialize(exp::Expr)
-    m = MExpr(exp)
-    "exponentialize($m)" |> MExpr |> mcall |> parse
-end
-
-float(m::MExpr) = "float($m)" |> MExpr |> mcall
-
-subst(a, b, c::MExpr) = "subst($a, $b, $c)" |> MExpr |> mcall
-
-function subst(a, b, c::Expr)
-    m = MExpr(c)
-    "subst($a, $b, $m) )" |> MExpr |> mcall |> parse
+function subst{T}(expr::T)
+    mexpr = MExpr(expr)
+    out = mcall(MExpr("subst($mexpr)"))
+    convert(T, out)
 end

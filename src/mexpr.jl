@@ -1,9 +1,11 @@
 export MExpr,
        @m_str,
        parse,
-       mcall
+       mcall,
+       convert
 
-import Base: parse
+import Base: parse,
+             convert
 
 type MExpr
 	str::String
@@ -54,6 +56,9 @@ function parse(m::MExpr)
     parse(str)
 end
 
+convert(::Type{Compat.String}, m::MExpr) = m.str
+convert(::Type{Expr}, m::MExpr) = parse(m)
+
 """
 	mcall(m::MExpr)
 
@@ -68,15 +73,12 @@ function mcall(m::MExpr)
 end
 
 """
-	mcall(str::String)
+	mcall{T}(expr::T)
 
-Evaluate a string as a Maxima expression
+Evaluate an expression using the Maxima interpretor
 """
-mcall(str::Compat.String) = str |> MExpr |> mcall
-
-"""
-	mcall(expr::Expr)
-
-Translate a Julia expression into a Maxima expression then evaluate.
-"""
-mcall(expr::Expr) = expr |> MExpr |> mcall
+function mcall{T}(expr::T)
+    mexpr = MExpr(expr)
+    return convert(T, mcall(mexpr))
+end
+    
