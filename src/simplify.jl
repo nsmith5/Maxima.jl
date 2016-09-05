@@ -24,54 +24,111 @@ import Base: expand,
              factor,
              float
 
+"""
+    ratsimp{T}(expr::T)
+
+Simplify expression.
+"""
 function ratsimp{T}(expr::T)
     mexpr = MExpr(expr)
     out = mcall(MExpr("ratsimp($mexpr)"))
     convert(T, out)
 end
 
-function ratcan{T}(expr::T)
+"""
+    radcan{T}(expr::T)
+
+Simplify radicals in expression.
+"""
+function radcan{T}(expr::T)
     mexpr = MExpr(expr)
-    out = mcall(MExpr("ratcan($mexpr)"))
+    out = mcall(MExpr("radcan($mexpr)"))
     convert(T, out)
 end
 
+
+"""
+    factor{T}(expr::T)
+
+Factorize polynomial expression
+"""
 function factor{T}(expr::T)
     mexpr = MExpr(expr)
     out = mcall(MExpr("factor($mexpr)"))
     convert(T, out)
 end
 
+"""
+    gfactor{T}(expr::T)
+
+Factorize complex polynomial expression
+"""
 function gfactor{T}(expr::T)
     mexpr = MExpr(expr)
     out = mcall(MExpr("gfactor($mexpr)"))
     convert(T, out)
 end
 
+"""
+    expand{T}(expr::T)
+
+Expand expression
+"""
 function expand{T}(expr::T)
     mexpr = MExpr(expr)
     out = mcall(MExpr("expand($mexpr)"))
     convert(T, out)
 end
 
+"""
+    logcontract{T}(expr::T)
+
+Contract logarithms in expression
+"""
 function logcontract{T}(expr::T)
     mexpr = MExpr(expr)
     out = mcall(MExpr("logcontract($mexpr)"))
     convert(T, out)
 end
 
+"""
+    logexpand{T}(expr::T)
+
+Expand logarithm terms in an expression
+"""
+function logexpand{T}(expr::T)
+    mexpr = MExpr(expr)
+    out = mcall(MExpr("$mexpr, logexpand=super"))
+    convert(T, out)
+end
+
+"""
+    makefact{T}(expr::T)
+
+Convert expression into factorial form.
+"""
 function makefact{T}(expr::T)
     mexpr = MExpr(expr)
     out = mcall(MExpr("makefact($mexpr)"))
     convert(T, out)
 end
 
+"""
+    makegamma{T}(expr::T)
+
+Convert factorial to gamma functions in expression
+"""
 function makegamma{T}(expr::T)
     mexpr = MExpr(expr)
     out = mcall(MExpr("makegamma($mexpr)"))
     convert(T, out)
 end
 
+"""
+    trigsimp{T}(expr::T)
+
+Simplify trigonometric expression
+"""
 function trigsimp{T}(expr::T)
     mexpr = MExpr(expr)
     out = mcall(MExpr("trigsimp($mexpr)"))
