@@ -132,8 +132,9 @@ function exponentialize{T}(expr::T)
     convert(T, out)
 end
 
-function float{T}(expr::T)
-    mexpr = MExpr(expr)
+function float(expr::Union{Compat.String, Expr, MExpr})
+    T = typeof(expr)
+	mexpr = MExpr(expr)
     out = mcall(MExpr("float($mexpr)"))
     convert(T, out)
 end

@@ -2,13 +2,21 @@ export MExpr,
        @m_str,
        parse,
        mcall,
-       convert
+       convert,
+       error
 
 import Base: parse,
-             convert
+             convert,
+             error
+
+type MaximaError <: Exception
+end
+
+type MaximaSyntaxError <: Exception
+end
 
 type MExpr
-	str::String
+	str::String 
 end
 
 macro m_str(str)
@@ -59,6 +67,12 @@ end
 convert(::Type{Compat.String}, m::MExpr) = m.str
 convert(::Type{Expr}, m::MExpr) = parse(m)
 
+function error(mexpr::MExpr)
+    input("$(mexpr.str);")
+    output()
+    return take!(errchannel)
+end
+
 """
 	mcall(m::MExpr)
 
@@ -67,9 +81,16 @@ Evaluate a Maxima expression.
 function mcall(m::MExpr)
     put!(inputchannel, "$(m.str);")
     output = take!(outputchannel)
-    output = replace(output, '\n', "")
-    output = replace(output, " ", "")
-	MExpr(output)
+    err = take!(errchannel)
+    if err == 0
+        output = replace(output, '\n', "")
+        output = replace(output, " ", "")
+        return MExpr(output)    
+    elseif err == 1
+        throw(MaximaError())
+    elseif err == 2
+        throw(MaximaSyntaxError())
+    end
 end
 
 """
@@ -80,5 +101,4 @@ Evaluate an expression using the Maxima interpretor
 function mcall{T}(expr::T)
     mexpr = MExpr(expr)
     return convert(T, mcall(mexpr))
-end
-    
+end 

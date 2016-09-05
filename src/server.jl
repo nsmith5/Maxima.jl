@@ -1,5 +1,6 @@
 const inputchannel = Channel{Compat.String}(1)
 const outputchannel = Channel{Compat.String}(1)
+const errchannel = Channel{Int}(1)              
 
 """
     connect(port)
@@ -52,9 +53,13 @@ function startserver(port)
         maxima --server=$port --very-quiet
 		--run-string="display2d: false\$"`)
     socket = fetch(socketrequest)
-
+    
     readavailable(socket)
+    write(socket, "errormsg: false\$")
     stopchar = Char(4)
+    
+    syn_err = " \nincorrect syntax"
+    max_err = " \n -- an error"
 
     while true
         input = take!(inputchannel)
@@ -65,9 +70,15 @@ function startserver(port)
 		while char != stopchar
 			char = read(socket, Char)
 			str = string(str, char)
+            if str == max_err
+                put!(errchannel, 1)
+            elseif str == syn_err
+                put!(errchannel, 2)
+            end
 		end
 	    str = rstrip(str, stopchar)
         put!(outputchannel, str)
+        isready(errchannel) || put!(errchannel, 0)
     end
     return nothing
 end

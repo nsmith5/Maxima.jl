@@ -24,11 +24,11 @@ function integrate{T}(expr::T, s)
     convert(T, out)
 end
 
-function integrate(m::MExpr, s, lower::Number, upper::Number)
+function integrate(m::MExpr, s, lower, upper)
     MExpr("integrate($m, $s, $lower, $upper)") |> mcall
 end
 
-function integrate{T}(expr::T, s, lower::Number, upper::Number)
+function integrate{T}(expr::T, s, lower, upper)
     m = MExpr(expr)
     out = integrate(m, s, lower, upper)
     convert(T, out)
@@ -107,7 +107,7 @@ function taylor(m::MExpr, x, x0, order::Integer)
     MExpr("taylor($m, $x, $x0, $order)") |> mcall
 end
 
-function taylor{T}(exp::T, x, x0::Number, order::Integer)
+function taylor{T}(exp::T, x, x0, order::Integer)
     m = MExpr(exp)
     out = taylor(m, x, x0, order)
     convert(T, out)
