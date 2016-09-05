@@ -139,8 +139,8 @@ function float(expr::Union{Compat.String, Expr, MExpr})
     convert(T, out)
 end
 
-function subst{T}(expr::T)
+function subst{T}(a, b, expr::T)
     mexpr = MExpr(expr)
-    out = mcall(MExpr("subst($mexpr)"))
+    out = mcall(MExpr("subst($a, $b, $mexpr)"))
     convert(T, out)
 end

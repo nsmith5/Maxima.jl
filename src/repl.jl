@@ -30,7 +30,9 @@ function respond(repl, main)
         end
         input = takebuf_string(buf)
         if '%' in input
-            input = replace(input, '%', "$ans")
+            tail = last(input)                              # chop the tail
+            input = subst("$(ans)", "%", input[1:end-1])   # substitute
+            input = string(input, tail)                     # add the tail
         end
         if !isempty(strip(input))
 		    try
