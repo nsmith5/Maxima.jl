@@ -33,13 +33,18 @@ function respond(repl, main)
             input = replace(input, '%', "$ans")
         end
         if !isempty(strip(input))
-			global ans = MExpr(input[1:end-1]) |> mcall
-            REPL.reset(repl)
-            if input[end] == ';'
-			    REPL.print_response(repl, ans, nothing, true, Base.have_color)
-			else
-			    REPL.print_response(repl, nothing, nothing, true, Base.have_color)
-			end
+		    try
+                global ans = MExpr(input[1:end-1]) |> mcall
+                REPL.reset(repl)
+                if input[end] == ';'
+		            REPL.print_response(repl, ans, nothing, true, Base.have_color)
+		        else
+		            REPL.print_response(repl, nothing, nothing, true, Base.have_color)
+		        end
+            catch err
+                REPL.reset(repl)
+                REPL.print_response(repl, err, catch_backtrace(), true, Base.have_color)
+            end
         end
         REPL.prepare_next(repl)
         REPL.reset_state(s)
