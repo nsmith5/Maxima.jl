@@ -28,6 +28,20 @@ import Base: expand,
     ratsimp{T}(expr::T)
 
 Simplify expression.
+
+# Examples
+
+```julia
+julia> ratsimp(\"a + b/c\")
+\"(a*c+b)/c\"
+
+julia> ratsimp(:(sin(asin(a + b/c))))
+:((a * c + b) / c)
+
+julia> ratsimp(m\"%e^log(x)\")
+ 
+                                       x
+```
 """
 function ratsimp{T}(expr::T)
     mexpr = MExpr(expr)
@@ -51,6 +65,18 @@ end
     factor{T}(expr::T)
 
 Factorize polynomial expression
+
+## Examples
+
+```julia
+julia> factor(:(x^2 + 2x + 1))
+:((x + 1) ^ 2)
+
+julia> factor(MExpr(\"a^2 - b^2\"))
+ 
+                                (a - b) (b + a)
+
+```
 """
 function factor{T}(expr::T)
     mexpr = MExpr(expr)
@@ -62,6 +88,14 @@ end
     gfactor{T}(expr::T)
 
 Factorize complex polynomial expression
+
+## Examples
+
+```julia
+julia> gfactor(:(z^2 + 2*im*z - 1))
+:((z + im) ^ 2)
+
+```
 """
 function gfactor{T}(expr::T)
     mexpr = MExpr(expr)
@@ -70,14 +104,33 @@ function gfactor{T}(expr::T)
 end
 
 """
-    expand{T}(expr::T)
+    expand(expr)
 
-Expand expression
+Expand expression. 
+
+## Examples
+```julia
+julia> expand(m\"(a + b)^2\")
+ 
+                                 2            2
+                                b  + 2 a b + a
+
+```
 """
-function expand{T}(expr::T)
+function expand(expr::Compat.String)
     mexpr = MExpr(expr)
     out = mcall(MExpr("expand($mexpr)"))
-    convert(T, out)
+    convert(Compat.String, out)
+end
+
+function expand(expr::Expr)
+    mexpr = MExpr(expr)
+    out = mcall(MExpr("expand($mexpr)"))
+    convert(Expr, out)
+end
+
+function expand(expr::MExpr)
+    mcall(MExpr("expand($expr)"))
 end
 
 """
