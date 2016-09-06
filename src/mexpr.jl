@@ -3,7 +3,9 @@ export MExpr,
        parse,
        mcall,
        convert,
-       error
+       error,
+       MaximaError,
+       MaximaSyntaxError
 
 import Base: parse,
              convert,
@@ -15,6 +17,19 @@ end
 type MaximaSyntaxError <: Exception
 end
 
+
+"""
+
+A Maxima expression
+
+## Summary:
+   
+type MExpr <: Any
+
+## Fields: 
+
+str :: String
+"""
 type MExpr
 	str::String 
 end
@@ -48,6 +63,19 @@ function _subst(a, b, expr)
 	return mstr.str
 end
 
+"""
+    MExpr(expr::Expr)
+
+Convert Julia expression to Maxima expression
+
+## Examples
+```julia
+julia> MExpr(:(sin(x*im) + cos(y*φ)))
+ 
+                           cos(%phi y) + %i sinh(x)
+
+```
+"""
 function MExpr(expr::Expr)
     str = "$expr"
     for key in keys(jl_to_m)
@@ -56,6 +84,18 @@ function MExpr(expr::Expr)
     MExpr(str)
 end
 
+"""
+    parse(mexpr::MExpr)
+
+Parse a Maxima expression into a Julia expression
+
+## Examples
+```julia
+julia> parse(m\"sin(%i*x)\")
+:(im * sinh(x))
+
+```
+"""
 function parse(m::MExpr)
     str = m.str
     for key in keys(m_to_jl)
@@ -77,6 +117,18 @@ end
 	mcall(m::MExpr)
 
 Evaluate a Maxima expression.
+
+## Examples
+```julia
+julia> m\"integrate(sin(x), x)\"
+ 
+                             integrate(sin(x), x)
+
+julia> mcall(ans)
+ 
+                                   - cos(x)
+
+```
 """
 function mcall(m::MExpr)
     put!(inputchannel, "$(m.str);")
@@ -96,7 +148,18 @@ end
 """
 	mcall{T}(expr::T)
 
-Evaluate an expression using the Maxima interpretor
+Evaluate a Julia expression or string using the Maxima interpretor and convert
+output back into the input type
+
+## Examples
+```julia
+julia> mcall(\"integrate(sin(y)^2, y)\")
+\"(y-sin(2*y)/2)/2\"
+
+julia> mcall(:(integrate(1/(1+x^2), x)))
+:(atan(x))
+
+```
 """
 function mcall{T}(expr::T)
     mexpr = MExpr(expr)
