@@ -1,3 +1,5 @@
+# This file is part of Maxima.jl. It is licensed under the MIT license
+
 export string,
        show
 

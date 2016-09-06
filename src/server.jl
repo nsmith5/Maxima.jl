@@ -1,3 +1,5 @@
+# This file is part of Maxima.jl. It is licensed under the MIT license
+
 const inputchannel = Channel{Compat.String}(1)
 const outputchannel = Channel{Compat.String}(1)
 const errchannel = Channel{Int}(1)              

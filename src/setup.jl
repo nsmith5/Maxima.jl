@@ -1,7 +1,5 @@
 # This file is part of Maxima.jl. It is licensed under the MIT license
 
-# Is Maxima installed and in the path?
-
 try
 	@compat	readstring(`maxima --version`)
 catch err
