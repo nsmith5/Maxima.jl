@@ -14,11 +14,16 @@ import Base: parse,
              error
 
 type MaximaError <: Exception
+	errstr::Compat.String
 end
+
+Base.showerror(io::IO, err::MaximaError) = print(io, err.errstr)
 
 type MaximaSyntaxError <: Exception
+	errstr::Compat.String
 end
 
+Base.showerror(io::IO, err::MaximaSyntaxError) = print(io, err.errstr)
 
 """
 
@@ -33,7 +38,7 @@ type MExpr <: Any
 str :: String
 """
 type MExpr
-	str::String 
+	str::Compat.String 
 end
 
 macro m_str(str)
@@ -141,9 +146,13 @@ function mcall(m::MExpr)
         output = replace(output, " ", "")
         return MExpr(output)    
     elseif err == 1
-        throw(MaximaError())
+		input("errormsg()\$")
+		err = take!(errchannel)
+		@assert err == 0
+		output = take!(outputchannel)
+        throw(MaximaError(output))
     elseif err == 2
-        throw(MaximaSyntaxError())
+        throw(MaximaSyntaxError(output))
     end
 end
 
