@@ -1,19 +1,38 @@
 # Getting Started
 
-## Installation
+## Maxima Expressions
 
-Maxima.jl is not a registered package as yet and so it must be cloned from the 
-github repository.
+Maxima.jl revolves around the Maxima expression type: `MExpr`. Maxima expressions can be constructed using a constructor or a string macro. 
 
-```julia
-Pkg.clone("https://github.com/nsmith5/Maxima.jl.git")
+```@repl
+using Maxima # hide
+MExpr("sin(x)/x")
+m"integrate(1 + x^2, x)"
 ```
 
-Maxima.jl also requires a working installation of Maxima. Maxima can be 
-installed by grabbing the appropriate installer 
-[here](http://maxima.sourceforge.net/download.html). On most Linux distributions, you 
-can also install Maxima through your distribution's repositories. 
+Maxima expressions don't neccessarily need to be valid Maxima, but a warning will be printed when the expression is printed. 
 
-## Usage
+```@repl
+using Maxima # hide
+m"1+"
+m"1/0"
+```
+
+Maxima expressions can be evaluated using `mcall`.
+
+```@repl
+using Maxima # hide
+m"integrate(1/(1+x^2), x)"
+mcall(ans)
+mcall(m"1+")
+```
+
+
+
+## 
+
+
+
+
 
 
