@@ -29,39 +29,39 @@ var documenterSearchIndex = {"docs": [
     "page": "Home",
     "title": "Installation",
     "category": "section",
-    "text": "Maxima.jl requires a working Maxima installation. Downloads and installation  instructions can be found here. If you're  running a Linux operating system take a look in your local repositories. Once Maxima is installed, check that it is accessible from the Julia shell.julia> run(`maxima`)A Maxima shell should open and you can quit it by entering quit(); into the  shell.Maxima.jl can be installed using the Julia package manager by cloning the  repository from github. julia> Pkg.clone(\"https://github.com/nsmith5/Maxima.jl.git\")\nMaxima.jl currently supports Julia versions >= 0.4.0. "
+    "text": "Maxima.jl can be installed using the Julia package manager by cloning the  repository from github. Maxima.jl currently supports version of Julia >= v0.4.0.julia> Pkg.clone(\"https://github.com/nsmith5/Maxima.jl.git\")\nMaxima.jl requires a working Maxima installation. Downloads and installation  instructions can be found here. If you're  running a Linux operating system take a look in your local repositories. Once Maxima is installed, check that it is accessible from the Julia shell.julia> run(`maxima`)A Maxima shell should open and you can quit it by entering quit(); <return> at the prompt."
 },
 
 {
-    "location": "man/getting_started.html#",
-    "page": "Getting Started",
-    "title": "Getting Started",
+    "location": "man/manual.html#",
+    "page": "Manual",
+    "title": "Manual",
     "category": "page",
     "text": ""
 },
 
 {
-    "location": "man/getting_started.html#Getting-Started-1",
-    "page": "Getting Started",
+    "location": "man/manual.html#Getting-Started-1",
+    "page": "Manual",
     "title": "Getting Started",
     "category": "section",
-    "text": ""
+    "text": "To start using Maxima.jl, fire up a repl session and load the package.julia> using Maxima\n\njulia> Connecting Maxima to server on port 8080In the backend, Maxima.jl connects to a Maxima session over a TCP socket, so you'll see a statement print out about the port that Maxima connected on. You can play around a bit making Maxima expression with the @m_str string macro and evaluating them with mcall()using Maxima # hide\nm\"sin(x)/x\"\nm\"integrate(sin(x), x)\"\nmcall(ans)You can also interact with the Maxima session directly by entering the Maxima repl mode.julia>  # type ']'\n\nmaxima> 1 + 1;\n             \n               2\n\nmaxima> sin(x)$\n\nmaxima>"
 },
 
 {
-    "location": "man/getting_started.html#Installation-1",
-    "page": "Getting Started",
-    "title": "Installation",
+    "location": "man/manual.html#Maxima-Expressions-1",
+    "page": "Manual",
+    "title": "Maxima Expressions",
     "category": "section",
-    "text": "Maxima.jl is not a registered package as yet and so it must be cloned from the  github repository.Pkg.clone(\"https://github.com/nsmith5/Maxima.jl.git\")Maxima.jl also requires a working installation of Maxima. Maxima can be  installed by grabbing the appropriate installer  here. On most Linux distributions, you  can also install Maxima through your distribution's repositories. "
+    "text": "Maxima.jl revolves around the Maxima expression type: MExpr. Maxima expressions can be constructed using a constructor or a string macro and evaluated with mcall. using Maxima # hide\nMExpr(\"sin(x)/x\")\nm\"integrate(1 + x^2, x)\"\nmcall(ans)Maxima expressions don't neccessarily need to be valid Maxima, but a warning will be printed when the expression is printed and an error will be thrown if the expression is evaluated. using Maxima # hide\nm\"1+\"\nmcall(ans)\nm\"1/0\"\nmcall(ans)Maxima.jl also allows for translation between Maxima and Julia expressions. julia> g = m\"atan(%i*%pi*y)\"\n \n                                %i atanh(%pi y)\n\njulia> parse(g)\n:(im * atanh(y * π))\n\njulia> exp = :(sin(π*im))\n:(sin(π * im))\n\njulia> mexp = MExpr(exp)\n \n                                 %i sinh(%pi)\n"
 },
 
 {
-    "location": "man/getting_started.html#Usage-1",
-    "page": "Getting Started",
-    "title": "Usage",
+    "location": "man/manual.html#Basic-Library-1",
+    "page": "Manual",
+    "title": "Basic Library",
     "category": "section",
-    "text": ""
+    "text": "Maxima.jl wraps many of the basic Maxima functions for convenience and these functions may be applied to Maxima expressions, Julia expressions or basic strings. By convention, the return type of these functions is determined by the most important input type. For instance, the integrate function returns the type of the integrand. julia> integrate(\"sin(x)\", :x)\n\"-cos(x)\"\n\njulia> integrate(:(sin(x)), \"x\")\n:(-cos(x))\n\njulia> integrate(m\"sin(x)\", 'x')\n\n					- cos(x)\nAs you can see, the basic library functions are very flexible about their argument types. Basically, as long as the argument string interpolates to the thing you want then it will work. For a list of all the functions that are wrapped take a look through the library reference section of the documentation. "
 },
 
 {
