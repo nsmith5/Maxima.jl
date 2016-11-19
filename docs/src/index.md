@@ -16,6 +16,14 @@ alternative to proprietary software such as Mathematica, Maple and others.
 
 ## Installation
 
+Maxima.jl can be installed using the Julia package manager by cloning the 
+repository from github. Maxima.jl currently supports version of Julia >= v0.4.0.
+
+```julia
+julia> Pkg.clone("https://github.com/nsmith5/Maxima.jl.git")
+
+```
+
 Maxima.jl requires a working Maxima installation. Downloads and installation 
 instructions can be found [here](http://maxima.sourceforge.net/). If you're 
 running a Linux operating system take a look in your local repositories. 
@@ -26,16 +34,4 @@ Once Maxima is installed, check that it is accessible from the Julia shell.
 julia> run(`maxima`)
 ```
 
-A Maxima shell should open and you can quit it by entering `quit();` into the 
-shell.
-
-
-Maxima.jl can be installed using the Julia package manager by cloning the 
-repository from github. 
-
-```julia
-julia> Pkg.clone("https://github.com/nsmith5/Maxima.jl.git")
-
-```
-
-Maxima.jl currently supports Julia versions >= 0.4.0. 
+A Maxima shell should open and you can quit it by entering `quit(); <return>` at the prompt.

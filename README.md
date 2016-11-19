@@ -1,93 +1,39 @@
-# Maxima.jl 
+# Maxima.jl
 
-Maxima.jl is a tool for symbolic computation in Julia using the Maxima computer 
-algebra system.
+*Symbolic Computations in Julia using Maxima*
 
-## Install
+Maxima.jl is a Julia package for performing symbolic computations using Maxima. 
+Maxima is computer algebra software that provides a free and open source 
+alternative to proprietary software such as Mathematica, Maple and others.
 
-Maxima.jl is still in very early development stages, but if you'd like to try it
- out you can clone the repository using the Package manager
+Checkout the [documentation](https://nsmith5.github.io/Maxima.jl) for details!
+
+## Features
+
+ - Contains a full Maxima repl that can be entered from the Julia repl
+ - Pretty I/O for Maxima expressions including Latex when using IJulia and formatted '2d' plain text in the repl
+ - Basic translation of expressions between Maxima and Julia
+ - Wrapper functions for much of the Maxima standard library that operate on Maxima expressions, Julia expressions and strings
+ - Plotting via Maxima's gnuplot functionality
+
+## Installation
+
+Maxima.jl can be installed using the Julia package manager by cloning the 
+repository from github. Maxima.jl currently supports version of Julia >= v0.4.0.
 
 ```julia
 julia> Pkg.clone("https://github.com/nsmith5/Maxima.jl.git")
+
 ```
 
-At the moment Maxima.jl does not take care of binary dependencies so you'll need
- to have a working installation of maxima on your system. 
+Maxima.jl requires a working Maxima installation. Downloads and installation 
+instructions can be found [here](http://maxima.sourceforge.net/). If you're 
+running a Linux operating system take a look in your local repositories. 
 
-## How-to
-
-Maxima.jl provides a Maxima expression type, `MExpr`, that can be manipulated 
-symbolically.  
+Once Maxima is installed, check that it is accessible from the Julia shell.
 
 ```julia
-julia> using Maxima
-Connecting Maxima to server on port 8080
-
-julia> MExpr("sin(x)/x")
-
-                        sin(x)
-                        ------
-                          x
-
-julia> subst(:y, :x, ans)
-
-                        sin(y)
-                        ------
-                          y
-
-julia> trigsimp(m"sin(x)^2 + cos(x)^2")
-
-                         1
-                         
-julia> typeof(ans)
-Maxima.MExpr
-```
-A Maxima expression may be parsed as a Julia expression using the `parse` 
-function and a Julia expression may be used to construct a Maxima expression 
-using the `MExpr` constructor.
-
-```julia
-julia> mexpr = m"%e^(%pi*x)"
-
-                              %pi x
-                            %e
-
-julia> expr = parse(mexpr)
-:(e ^ (x * π))
-
-julia> MExpr(expr)
-
-                              %pi x
-                            %e
-```
-Many Maxima functions can be used directly on Julia expressions and this 
-conversion process is hidden in the background. More detailed documentation will 
- be coming soon
-
-## The Maxima REPL
-
-Maxima.jl extends the Julia repl with a Maxima evaluation mode
-
-```julia
-julia>         # press ']'
-
-maxima> integrate(sin(x), x);
-
-                        - cos(x)
-
-maxima> expand((a + b)^2);
-
-                       2          2
-                      a  + a b + b
-
-maxima> a: 1.0$
-
-maxima> a;
-          
-                          1.0
-
-julia>               # press backspace to escape maxima mode
+julia> run(`maxima`)
 ```
 
-
+A Maxima shell should open and you can quit it by entering `quit(); <return>` at the prompt.

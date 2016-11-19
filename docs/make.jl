@@ -7,7 +7,7 @@ makedocs(
     sitename = "Maxima.jl",
     pages = Any[
         "Home" => "index.md", 
-        "Manual" => Any["Getting Started" => "man/getting_started.md"],
+        "Manual" => "man/manual.md",
         "Library" => Any["lib/basics.md", "lib/simplify.md"]
     ]
 )
