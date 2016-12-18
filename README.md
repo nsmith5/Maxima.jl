@@ -1,4 +1,4 @@
-<center>[![][logo]][home-url]</center>
+<img src="./docs/src/assets/logo.png" align="middle">
 
 #  Maxima.jl  
 
