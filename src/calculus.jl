@@ -27,14 +27,6 @@ Evaluate the indefinite integral
 ```math
 \\int f(x) dx
 ```
-# Examples
-
-
-```@repl
-using Maxima # hide
-integrate(:(sin(x)), :x)
-println("Hello")
-```
 """
 function integrate{T}(expr::T, s)
     m = MExpr(expr)
