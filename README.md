@@ -1,4 +1,4 @@
-[![][logo]][home-url] # Maxima.jl
+# [![][logo]][home-url] Maxima.jl
 
 | **Documentation**           | **Build Status**            |
 |:---------------------------:|:---------------------------:|
