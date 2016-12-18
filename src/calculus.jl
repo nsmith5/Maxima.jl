@@ -21,9 +21,20 @@ function integrate(m::MExpr, s)
 end
 
 """
-    integrate{T}(f::T, s)
+    integrate{T}(f::T, x)
 
-Evaluate the indefinite integral ``\int f(x) dx``
+Evaluate the indefinite integral
+```math
+\\int f(x) dx
+```
+# Examples
+
+
+```@repl
+using Maxima # hide
+integrate(:(sin(x)), :x)
+println("Hello")
+```
 """
 function integrate{T}(expr::T, s)
     m = MExpr(expr)

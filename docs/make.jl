@@ -8,7 +8,11 @@ makedocs(
     pages = Any[
         "Home" => "index.md",
         "Manual" => "man/manual.md",
-        "Library" => Any["lib/basics.md", "lib/simplify.md"]
+        "Library" => Any[
+            "lib/basics.md",
+            "lib/simplify.md",
+            "lib/calculus.md",
+            "lib/plot.md"]
     ]
 )
 
