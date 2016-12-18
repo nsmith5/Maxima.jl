@@ -20,5 +20,6 @@ deploydocs(
     deps = Deps.pip("mkdocs", "python-markdown-math"),
     repo="github.com/nsmith5/Maxima.jl.git",
     julia = "release",
-    osname = "linux"
+    osname = "linux",
+    make = "julia make.jl"
 )
