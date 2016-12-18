@@ -1,4 +1,6 @@
-#  Maxima.jl  <div style="text-align: right"> [![][logo]][home-url]</div>
+<center>[![][logo]][home-url]</center>
+
+#  Maxima.jl  
 
 | **Documentation**           | **Build Status**            |
 |:---------------------------:|:---------------------------:|
