@@ -20,6 +20,11 @@ function integrate(m::MExpr, s)
     MExpr("integrate($m, $s)") |> mcall
 end
 
+"""
+    integrate{T}(f::T, s)
+
+Evaluate the indefinite integral ``\int f(x) dx``
+"""
 function integrate{T}(expr::T, s)
     m = MExpr(expr)
     out = integrate(m, s)
@@ -154,4 +159,3 @@ function ilt{T}(func::T, oldvar, newvar)
     m = MExpr(func)
     convert(T, "ilt($m, $oldvar, $newvar)" |> MExpr |> mcall)
 end
-

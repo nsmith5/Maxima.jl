@@ -30,15 +30,15 @@ Base.showerror(io::IO, err::MaximaSyntaxError) = print(io, err.errstr)
 A Maxima expression
 
 ## Summary:
-   
+
 type MExpr <: Any
 
-## Fields: 
+## Fields:
 
 str :: String
 """
 type MExpr
-	str::Compat.String 
+	str::Compat.String
 end
 
 macro m_str(str)
@@ -78,7 +78,7 @@ Convert Julia expression to Maxima expression
 ## Examples
 ```julia
 julia> MExpr(:(sin(x*im) + cos(y*φ)))
- 
+
                            cos(%phi y) + %i sinh(x)
 
 ```
@@ -128,11 +128,11 @@ Evaluate a Maxima expression.
 ## Examples
 ```julia
 julia> m\"integrate(sin(x), x)\"
- 
+
                              integrate(sin(x), x)
 
 julia> mcall(ans)
- 
+
                                    - cos(x)
 
 ```
@@ -144,7 +144,7 @@ function mcall(m::MExpr)
     if err == 0
         output = replace(output, '\n', "")
         output = replace(output, " ", "")
-        return MExpr(output)    
+        return MExpr(output)
     elseif err == 1
 		input("errormsg()\$")
 		err = take!(errchannel)
@@ -175,4 +175,4 @@ julia> mcall(:(integrate(1/(1+x^2), x)))
 function mcall{T}(expr::T)
     mexpr = MExpr(expr)
     return convert(T, mcall(mexpr))
-end 
+end

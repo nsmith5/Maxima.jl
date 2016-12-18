@@ -13,11 +13,11 @@ Convert keyward arguments into the form of Maxima keyword arguments
 Ex:
 
 x = (1, 2) => [x, 1, 2]
-xlabel=\"x axis\" => [xlabel, \"x axis\"] 
+xlabel=\"x axis\" => [xlabel, \"x axis\"]
 """
 function kwarg_convert(kwarg)
     str = "[$(kwarg[1]),"
-    if isa(kwarg[2], Union{Tuple, Array})     
+    if isa(kwarg[2], Union{Tuple, Array})
         for thing in kwarg[2]
             str = str*" $thing,"
         end
@@ -31,6 +31,18 @@ function kwarg_convert(kwarg)
     return str
 end
 
+"""
+    plot2d(m::MExpr, kwargs...)
+
+Plot a Maxima expression using Gnuplot.
+
+# Examples
+
+```julia
+julia> plot2d(m"sin(x)", x=(1,2), title="Sine Wave") # Plot sine wave
+
+```
+"""
 function plot2d(m::MExpr; kwargs...)
     args = String[]
     for kwarg in kwargs
@@ -41,8 +53,8 @@ function plot2d(m::MExpr; kwargs...)
     for arg in args
         str = str*" $arg,"
     end
-    str = str[1:end - 1]*")"    
-    mcall(MExpr(str))    
+    str = str[1:end - 1]*")"
+    mcall(MExpr(str))
     return nothing
 end
 
@@ -65,6 +77,11 @@ function plot2d(m::Array{MExpr}; kwargs...)
     return nothing
 end
 
+"""
+    contour_plot(m::MExpr, kwargs...)
+
+Make a contour plot of the expression `m`
+"""
 function contour_plot(m::MExpr; kwargs...)
     args = String[]
     for kwarg in kwargs
@@ -75,11 +92,16 @@ function contour_plot(m::MExpr; kwargs...)
     for arg in args
         str = str*" $arg,"
     end
-    str = str[1:end - 1]*")"    
-    mcall(MExpr(str))    
+    str = str[1:end - 1]*")"
+    mcall(MExpr(str))
     return nothing
 end
 
+"""
+    plot3d(m::MExpr, kwargs...)
+
+Make 3d plot of the expression `m`
+"""
 function plot3d(m::MExpr; kwargs...)
     args = String[]
     for kwarg in kwargs
@@ -90,8 +112,7 @@ function plot3d(m::MExpr; kwargs...)
     for arg in args
         str = str*" $arg,"
     end
-    str = str[1:end - 1]*")"    
-    mcall(MExpr(str))    
-    return nothing 
+    str = str[1:end - 1]*")"
+    mcall(MExpr(str))
+    return nothing
 end
-    
