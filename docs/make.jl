@@ -3,17 +3,17 @@ using Documenter, Maxima
 makedocs(
     modules = [Maxima],
     clean = false,
-    format = Documenter.Formats.HTML,
+    format = :html,
     sitename = "Maxima.jl",
     pages = Any[
-        "Home" => "index.md", 
+        "Home" => "index.md",
         "Manual" => "man/manual.md",
         "Library" => Any["lib/basics.md", "lib/simplify.md"]
     ]
 )
 
 deploydocs(
-    deps = Deps.pip("mkdocs", "python-markdown-math")
+    deps = Deps.pip("mkdocs", "python-markdown-math"),
     repo="github.com/nsmith5/Maxima.jl.git",
     julia = "release",
     osname = "linux"
