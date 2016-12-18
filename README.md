@@ -6,9 +6,13 @@
 
 *Symbolic Computations in Julia using Maxima*
 
+<p align="center">
+
 | **Documentation**           | **Build Status**            |
 |:---------------------------:|:---------------------------:|
 |[![][docs-img]][docs-url]    |[![travis-img]][travis-url] [![codecov-img]][codecov-url] |
+
+</p>
 
 ## About
 
