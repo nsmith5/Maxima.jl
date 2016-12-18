@@ -4,17 +4,17 @@
 
 #  Maxima.jl  
 
+*Symbolic Computations in Julia using Maxima*
+
 | **Documentation**           | **Build Status**            |
 |:---------------------------:|:---------------------------:|
 |[![][docs-img]][docs-url]    |[![travis-img]][travis-url] [![codecov-img]][codecov-url] |
 
-*Symbolic Computations in Julia using Maxima*
+## About
 
 Maxima.jl is a Julia package for performing symbolic computations using Maxima.
 Maxima is computer algebra software that provides a free and open source
 alternative to proprietary software such as Mathematica, Maple and others.
-
-Checkout the [documentation](https://nsmith5.github.io/Maxima.jl) for details!
 
 ## Features
 
