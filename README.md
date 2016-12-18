@@ -1,4 +1,4 @@
-<img src="./docs/src/assets/logo.png" align="middle">
+<center><img src="./docs/src/assets/logo.png"></center>
 
 #  Maxima.jl  
 
