@@ -1,4 +1,4 @@
-# Maxima.jl
+[![][logo]][home-url] # Maxima.jl
 
 | **Documentation**           | **Build Status**            |
 |:---------------------------:|:---------------------------:|
@@ -41,6 +41,9 @@ julia> run(`maxima`)
 ```
 
 A Maxima shell should open and you can quit it by entering `quit(); <return>` at the prompt.
+
+[home-url]: https://github.com/nsmith5/Maxima.jl.git
+[logo]: ./docs/src/assets/logo.png
 
 [docs-img]: https://img.shields.io/badge/docs-stable-blue.svg
 [docs-url]: https://nsmith5.github.io/Maxima.jl/
