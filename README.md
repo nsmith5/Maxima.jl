@@ -1,4 +1,7 @@
-<p style="text-align:center;"><img src="./docs/src/assets/logo.png"></p>
+<p align="center">
+  <img src="./docs/src/assets/logo.png" alt="Maxima.jl"/>
+</p>
+
 #  Maxima.jl  
 
 | **Documentation**           | **Build Status**            |
