@@ -11,3 +11,10 @@ makedocs(
         "Library" => Any["lib/basics.md", "lib/simplify.md"]
     ]
 )
+
+deploydocs(
+    deps = Deps.pip("mkdocs", "python-markdown-math")
+    repo="github.com/nsmith5/Maxima.jl.git",
+    julia = "release",
+    osname = "linux"
+)
