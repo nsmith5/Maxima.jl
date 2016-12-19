@@ -8,7 +8,7 @@
 
 | **Documentation**           | **Build Status**            |
 |:---------------------------:|:---------------------------:|
-|[![][docs-img]][docs-url]    |[![travis-img]][travis-url] [![codecov-img]][codecov-url] |
+|[![][docs-stable-img]][docs-stable-url] [![][docs-latest-img]][docs-latest-url] |[![travis-img]][travis-url] [![codecov-img]][codecov-url] |
 
 ## About
 
@@ -49,8 +49,11 @@ A Maxima shell should open and you can quit it by entering `quit(); <return>` at
 [home-url]: https://github.com/nsmith5/Maxima.jl.git
 [logo]: ./docs/src/assets/logo.png
 
-[docs-img]: https://img.shields.io/badge/docs-latest-blue.svg
-[docs-url]: https://nsmith5.github.io/Maxima.jl/latest
+[docs-latest-img]: https://img.shields.io/badge/docs-latest-blue.svg
+[docs-latest-url]: https://nsmith5.github.io/Maxima.jl/latest
+
+[docs-stable-img]: https://img.shields.io/badge/docs-stable-blue.svg
+[docs-stable-url]: https://nsmith5.github.io/Maxima.jl/stable
 
 [codecov-img]: https://codecov.io/gh/nsmith5/Maxima.jl/branch/master/graph/badge.svg
 [codecov-url]: https://codecov.io/gh/nsmith5/Maxima.jl
