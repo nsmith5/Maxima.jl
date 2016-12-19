@@ -27,6 +27,12 @@ Evaluate the indefinite integral
 ```math
 \\int f(x) dx
 ```
+# Examples
+
+```julia
+julia> integrate(:(sin(x)), :x)
+:(-cos(x))
+```
 """
 function integrate{T}(expr::T, s)
     m = MExpr(expr)
