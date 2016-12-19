@@ -20,7 +20,7 @@ deploydocs(
     deps = nothing,
 	repo = "github.com/nsmith5/Maxima.jl.git",
     julia = "release",
-    osname = "linux",
+    osname = "osx",
     make = nothing,
-	target = "build" 
+	target = "build"
 )
