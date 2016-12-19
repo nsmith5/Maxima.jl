@@ -7,11 +7,13 @@ export MExpr,
        convert,
        error,
        MaximaError,
-       MaximaSyntaxError
+       MaximaSyntaxError,
+       ==
 
 import Base: parse,
              convert,
-             error
+             error,
+             ==
 
 type MaximaError <: Exception
 	errstr::Compat.String
@@ -175,4 +177,8 @@ julia> mcall(:(integrate(1/(1+x^2), x)))
 function mcall{T}(expr::T)
     mexpr = MExpr(expr)
     return convert(T, mcall(mexpr))
+end
+
+function ==(m::MExpr, n::MExpr)
+    return mcall(MExpr("is($m = $n)")) |> parse |> eval
 end
