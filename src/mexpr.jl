@@ -117,7 +117,7 @@ convert(::Type{Compat.String}, m::MExpr) = m.str
 convert(::Type{Expr}, m::MExpr) = parse(m)
 if VERSION < v"0.5.0"
     convert(::Type{UTF8String}, m::MExpr) = UTF8String(m.str)
-    convert(::Type{ASCIIString}, m::MExpr) = ACSIIString(m.str)
+    convert(::Type{ASCIIString}, m::MExpr) = ASCIIString(m.str)
 end
 
 function error(mexpr::MExpr)
