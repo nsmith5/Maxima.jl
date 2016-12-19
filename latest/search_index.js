@@ -45,7 +45,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Manual",
     "title": "Getting Started",
     "category": "section",
-    "text": "To start using Maxima.jl, fire up a repl session and load the package.julia> using Maxima\n\njulia> Connecting Maxima to server on port 8080In the backend, Maxima.jl connects to a Maxima session over a TCP socket, so you'll see a statement print out about the port that Maxima connected on. You can play around a bit making Maxima expression with the @m_str string macro and evaluating them with mcall()using Maxima # hide\nm\"sin(x)/x\"\nm\"integrate(sin(x), x)\"\nmcall(ans)You can also interact with the Maxima session directly by entering the Maxima repl mode.julia>  # type ']'\n\nmaxima> 1 + 1;\n             \n               2\n\nmaxima> sin(x)$\n\nmaxima>"
+    "text": "To start using Maxima.jl, fire up a repl session and load the package.julia> using Maxima\n\njulia> Connecting Maxima to server on port 8080In the backend, Maxima.jl connects to a Maxima session over a TCP socket, so you'll see a statement print out about the port that Maxima connected on. You can play around a bit making Maxima expression with the @m_str string macro and evaluating them with mcall()using Maxima # hide\nm\"sin(x)/x\"\nm\"integrate(sin(x), x)\"\nmcall(ans)You can also interact with the Maxima session directly by entering the Maxima repl mode.julia>  # type ']'\n\nmaxima> 1 + 1;\n\n               2\n\nmaxima> sin(x)$\n\nmaxima>"
 },
 
 {
@@ -53,7 +53,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Manual",
     "title": "Maxima Expressions",
     "category": "section",
-    "text": "Maxima.jl revolves around the Maxima expression type: MExpr. Maxima expressions can be constructed using a constructor or a string macro and evaluated with mcall. using Maxima # hide\nMExpr(\"sin(x)/x\")\nm\"integrate(1 + x^2, x)\"\nmcall(ans)Maxima expressions don't neccessarily need to be valid Maxima, but a warning will be printed when the expression is printed and an error will be thrown if the expression is evaluated. using Maxima # hide\nm\"1+\"\nmcall(ans)\nm\"1/0\"\nmcall(ans)Maxima.jl also allows for translation between Maxima and Julia expressions. julia> g = m\"atan(%i*%pi*y)\"\n \n                                %i atanh(%pi y)\n\njulia> parse(g)\n:(im * atanh(y * π))\n\njulia> exp = :(sin(π*im))\n:(sin(π * im))\n\njulia> mexp = MExpr(exp)\n \n                                 %i sinh(%pi)\n"
+    "text": "Maxima.jl revolves around the Maxima expression type: MExpr. Maxima expressions can be constructed using a constructor or a string macro and evaluated with mcall.using Maxima # hide\nMExpr(\"sin(x)/x\")\nm\"integrate(1 + x^2, x)\"\nmcall(ans)Maxima expressions don't neccessarily need to be valid Maxima, but a warning will be printed when the expression is printed and an error will be thrown if the expression is evaluated.using Maxima # hide\nm\"1+\"\nmcall(ans)\nm\"1/0\"\nmcall(ans)Maxima.jl also allows for translation between Maxima and Julia expressions.julia> g = m\"atan(%i*%pi*y)\"\n\n                                %i atanh(%pi y)\n\njulia> parse(g)\n:(im * atanh(y * π))\n\njulia> exp = :(sin(π*im))\n:(sin(π * im))\n\njulia> mexp = MExpr(exp)\n\n                                 %i sinh(%pi)\n"
 },
 
 {
@@ -61,7 +61,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Manual",
     "title": "Basic Library",
     "category": "section",
-    "text": "Maxima.jl wraps many of the basic Maxima functions for convenience and these functions may be applied to Maxima expressions, Julia expressions or basic strings. By convention, the return type of these functions is determined by the most important input type. For instance, the integrate function returns the type of the integrand. julia> integrate(\"sin(x)\", :x)\n\"-cos(x)\"\n\njulia> integrate(:(sin(x)), \"x\")\n:(-cos(x))\n\njulia> integrate(m\"sin(x)\", 'x')\n\n					- cos(x)\nAs you can see, the basic library functions are very flexible about their argument types. Basically, as long as the argument string interpolates to the thing you want then it will work. For a list of all the functions that are wrapped take a look through the library reference section of the documentation. "
+    "text": "Maxima.jl wraps many of the basic Maxima functions for convenience and these functions may be applied to Maxima expressions, Julia expressions or basic strings. By convention, the return type of these functions is determined by the most important input type. For instance, the integrate function returns the type of the integrand.julia> integrate(\"sin(x)\", :x)\n\"-cos(x)\"\n\njulia> integrate(:(sin(x)), \"x\")\n:(-cos(x))\n\njulia> integrate(m\"sin(x)\", 'x')\n\n					- cos(x)\nAs you can see, the basic library functions are very flexible about their argument types. Basically, as long as the argument string interpolates to the thing you want then it will work. For a list of all the functions that are wrapped take a look through the library reference section of the documentation."
 },
 
 {
@@ -301,7 +301,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Simplification",
     "title": "Simplification",
     "category": "section",
-    "text": "CurrentModule = MaximaModules = [Maxima]\nPages = [\"simplify.jl\"]"
+    "text": "The following functions are used to simplify expressions. CurrentModule = MaximaModules = [Maxima]\nPages = [\"simplify.jl\"]"
 },
 
 {
@@ -317,7 +317,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Calculus",
     "title": "Maxima.integrate",
     "category": "Method",
-    "text": "integrate{T}(f::T, x)\n\nEvaluate the indefinite integral\n\nint f(x) dx\n\n\n\n"
+    "text": "integrate{T}(f::T, x)\n\nEvaluate the indefinite integral\n\nint f(x) dx\n\nExamples\n\njulia> integrate(:(sin(x)), :x)\n:(-cos(x))\n\n\n\n"
 },
 
 {
