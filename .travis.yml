@@ -6,6 +6,9 @@ os:
   - linux
   - osx
 
+dist: trusty
+sudo: false
+
 julia:
   - 0.4
   - 0.5
