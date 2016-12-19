@@ -49,8 +49,8 @@ A Maxima shell should open and you can quit it by entering `quit(); <return>` at
 [home-url]: https://github.com/nsmith5/Maxima.jl.git
 [logo]: ./docs/src/assets/logo.png
 
-[docs-img]: https://img.shields.io/badge/docs-stable-blue.svg
-[docs-url]: https://nsmith5.github.io/Maxima.jl/
+[docs-img]: https://img.shields.io/badge/docs-latest-blue.svg
+[docs-url]: https://nsmith5.github.io/Maxima.jl/latest
 
 [codecov-img]: https://codecov.io/gh/nsmith5/Maxima.jl/branch/master/graph/badge.svg
 [codecov-url]: https://codecov.io/gh/nsmith5/Maxima.jl
