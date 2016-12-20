@@ -8,12 +8,14 @@ export MExpr,
        error,
        MaximaError,
        MaximaSyntaxError,
-       ==
+       ==,
+       getindex
 
 import Base: parse,
              convert,
              error,
-             ==
+             ==,
+             getindex
 
 type MaximaError <: Exception
 	errstr::Compat.String
@@ -185,4 +187,8 @@ end
 
 function ==(m::MExpr, n::MExpr)
     return mcall(MExpr("is($m = $n)")) |> parse |> eval
+end
+
+function getindex(m::MExpr, i)
+    return MExpr("$m[$i]") |> mcall
 end
