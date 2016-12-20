@@ -313,11 +313,99 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "lib/calculus.html#Base.LinAlg.diff-Tuple{T,Any,Integer}",
+    "page": "Calculus",
+    "title": "Base.LinAlg.diff",
+    "category": "Method",
+    "text": "diff{T}(f, x, n)\n\nTake the nth order derivative of f with respect to x.\n\nfracpartial^n f(x)partial x^n\n\n\n\n"
+},
+
+{
+    "location": "lib/calculus.html#Base.LinAlg.diff-Tuple{T,Any}",
+    "page": "Calculus",
+    "title": "Base.LinAlg.diff",
+    "category": "Method",
+    "text": "diff{T}(f, x)\n\nTake the derivative of f with respect to x\n\nfracpartial f(x )partial x\n\n\n\n"
+},
+
+{
+    "location": "lib/calculus.html#Base.sum-Tuple{T,Any,Any,Any}",
+    "page": "Calculus",
+    "title": "Base.sum",
+    "category": "Method",
+    "text": "sum{T}(f::T, k, start, finish)\n\nCompute the sum,\n\n    sum_k=start^finish f(k)\n\nsimplifying the sum if possible.\n\nExamples\n\njulia> sum(m\"1/n^2\", :n, 1, \"inf\")\n\n                                        2\n                                     %pi\n                                     ----\n                                      6\n\n\n\n\n"
+},
+
+{
+    "location": "lib/calculus.html#Maxima.ilt-Tuple{T,Any,Any}",
+    "page": "Calculus",
+    "title": "Maxima.ilt",
+    "category": "Method",
+    "text": "ilt{T}(f::T, s, t)\n\nCompute the inverse Laplace transform of f(s).\n\nt is the new variable and s is the old variable.\n\n\n\n"
+},
+
+{
+    "location": "lib/calculus.html#Maxima.integrate-Tuple{T,Any,Any,Any}",
+    "page": "Calculus",
+    "title": "Maxima.integrate",
+    "category": "Method",
+    "text": "integrate{T}(f::T, x, a, b)\n\nEvaluate the definite integral of f with respect to x from a to b.\n\n    int_a^b f(x) dx\n\n\n\n"
+},
+
+{
     "location": "lib/calculus.html#Maxima.integrate-Tuple{T,Any}",
     "page": "Calculus",
     "title": "Maxima.integrate",
     "category": "Method",
-    "text": "integrate{T}(f::T, x)\n\nEvaluate the indefinite integral\n\nint f(x) dx\n\nExamples\n\njulia> integrate(:(sin(x)), :x)\n:(-cos(x))\n\n\n\n"
+    "text": "integrate{T}(f::T, x)\n\nEvaluate the indefinite integral\n\nint f(x) dx\n\nExamples\n\njulia> integrate(:(sin(x)), :x)\n:(-cos(x))\n\nSee also\n\nrisch\n\n\n\n"
+},
+
+{
+    "location": "lib/calculus.html#Maxima.laplace-Tuple{T,Any,Any}",
+    "page": "Calculus",
+    "title": "Maxima.laplace",
+    "category": "Method",
+    "text": "laplace{T}(f::T, t, s)\n\nCompute the Laplace transform of f(t) where s is the new variable.\n\nmathcalLlbrace f rbrace (s) = int_0^infty f(t) e^-st dt\n\n\n\n"
+},
+
+{
+    "location": "lib/calculus.html#Maxima.limit-Tuple{Maxima.MExpr,Any,Any,Any}",
+    "page": "Calculus",
+    "title": "Maxima.limit",
+    "category": "Method",
+    "text": "limit{T}(f, x, a, side)\n\nTake the left or right sided limit as x approaches a of f(x).\n\nside may be either \"plus\" or \"minus\" denoting the right and left sided limit respectively\n\n\n\n"
+},
+
+{
+    "location": "lib/calculus.html#Maxima.limit-Tuple{T,Any,Any}",
+    "page": "Calculus",
+    "title": "Maxima.limit",
+    "category": "Method",
+    "text": "limit{T}(f, x, a)\n\nTake the limit as x approaches a of f(x)\n\nlim_x rightarrow a f(x)\n\n\n\n"
+},
+
+{
+    "location": "lib/calculus.html#Maxima.product-Tuple{T,Any,Any,Any}",
+    "page": "Calculus",
+    "title": "Maxima.product",
+    "category": "Method",
+    "text": "product{T}(f::T, k, start, finish)\n\nCompute the product,\n\n    prod_k=start^finish f(k)\n\nsimplifying the product if possible.\n\n\n\n"
+},
+
+{
+    "location": "lib/calculus.html#Maxima.risch-Tuple{T,Any}",
+    "page": "Calculus",
+    "title": "Maxima.risch",
+    "category": "Method",
+    "text": "risch{T}(f::T, x)\n\nCompute the indefinite integral of f with respect to x using the Risch algorithm\n\nSee also\n\nintegrate\n\n\n\n"
+},
+
+{
+    "location": "lib/calculus.html#Maxima.taylor-Tuple{T,Any,Any,Integer}",
+    "page": "Calculus",
+    "title": "Maxima.taylor",
+    "category": "Method",
+    "text": "taylor{T}(f::T, x, x0, n)\n\nTaylor expand f(x) around x_0 to nth order\n\n\n\n"
 },
 
 {
