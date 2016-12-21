@@ -1,4 +1,5 @@
 # This file is part of Maxima.jl. It is licensed under the MIT license
+#   Copyright (c) 2016 Nathan Smith
 
 export sum,
        integrate,
@@ -229,7 +230,7 @@ function product{T}(exp::T, k, start, finish)
 end
 
 function changevar(integral::MExpr, transform::MExpr, new, old)
-    "changevar($integral, $transform, new, old)" |> MExpr |> mcall
+    "changevar($integral, $transform, $new, $old)" |> MExpr |> mcall
 end
 
 function lbfgs(func::MExpr, var, guess; xtol = 1e-8)

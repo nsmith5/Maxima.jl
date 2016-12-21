@@ -5,8 +5,6 @@ language: julia
 os:
   - osx
 
-dist: trusty
-
 julia:
   - 0.4
   - 0.5
