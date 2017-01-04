@@ -3,7 +3,7 @@
 
 const inputchannel = Channel{Compat.String}(1)
 const outputchannel = Channel{Compat.String}(1)
-const errchannel = Channel{Int}(1)              
+const errchannel = Channel{Int}(1)
 
 """
     connect(port)
@@ -52,15 +52,19 @@ Start up a maxima client-server pair trying port `port` first.
 function startserver(port)
     server, port = connect(port)
     socketrequest = @spawn accept(server)
-    clientrequest = @spawn run(`
-        maxima --server=$port --very-quiet
-		--run-string="display2d: false\$"`)
+
+    if is_unix()
+        clientrequest = @spawn run(`maxima --server=$port --very-quiet --run-string="display2d: false\$"`)
+    else
+        clientrequest = @spawn run(`maxima.bat --server=$port --very-quiet --run-string="display2d: false\$"`)
+    end
+
     socket = fetch(socketrequest)
-    
+
     readavailable(socket)
     write(socket, "errormsg: false\$")
     stopchar = Char(4)
-    
+
     syn_err = " \nincorrect syntax"
     max_err = " \n -- an error"
 
@@ -95,4 +99,4 @@ function killserver()
 	input("quit();")
 	input(" ")			# Curiously, this line is important to insure the maxima client actually quit...
 	return nothing
-end 
+end

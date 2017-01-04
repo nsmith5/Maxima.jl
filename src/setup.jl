@@ -2,14 +2,18 @@
 #   Copyright (c) 2016 Nathan Smith
 
 try
-	@compat	readstring(`maxima --version`)
+	if is_unix()
+		@compat	readstring(`maxima --version`)
+	else
+		@compat readstring(`maxima.bat --version`)
+	end
 catch err
 	error("Looks like Maxima is either not installed or not in the path")
 end
 
 # Server setup
 
-const default_port = 8080			# choose default port	
+const default_port = 8080			# choose default port
 @spawn startserver(default_port)	# spawn client-server pair
 atexit(killserver)					# register `killserver` to run on exit
 
