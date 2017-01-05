@@ -26,11 +26,10 @@ alternative to proprietary software such as Mathematica, Maple and others.
 
 ## Installation
 
-Maxima.jl can be installed using the Julia package manager by cloning the
-repository from github. Maxima.jl currently supports version of Julia >= v0.4.0.
+Maxima.jl can be installed using the Julia package manager. Maxima.jl currently supports version of Julia >= v0.4.0.
 
 ```julia
-julia> Pkg.clone("https://github.com/nsmith5/Maxima.jl.git")
+julia> Pkg.add("Maxima")
 
 ```
 
@@ -38,13 +37,9 @@ Maxima.jl requires a working Maxima installation. Downloads and installation
 instructions can be found [here](http://maxima.sourceforge.net/). If you're
 running a Linux operating system take a look in your local repositories.
 
-Once Maxima is installed, check that it is accessible from the Julia shell.
+> **Note**: The Maxima package in most Debian based distributions is compiled against `gcl` and does not have unicode support. Unicode support is required by Maxima.jl. The solution is to compile Maxima yourself using a lisp that supports unicode (`sbcl` and `clisp` both work)
 
-```julia
-julia> run(`maxima`)
-```
-
-A Maxima shell should open and you can quit it by entering `quit(); <return>` at the prompt.
+On Windows you will also need to add the directory containing the `maxima.bat` executable to your `PATH` environment variable so that Julia can find it.
 
 [home-url]: https://github.com/nsmith5/Maxima.jl.git
 [logo]: ./docs/src/assets/logo.png
