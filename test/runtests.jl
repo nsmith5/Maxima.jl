@@ -7,6 +7,7 @@ using Base.Test
 @test m"expand((1+x)^2)" == m"1 + 2*x + x^2"
 @test mcall(:(exp(im*π))) == -1
 @test integrate(:(sin(x)), :x) == :(-cos(x))
+@test MExpr(:(100x)) == m"100 * x"
 
 # Calculus tests
 @test integrate(:(sin(x)), :x) == :(-cos(x))
