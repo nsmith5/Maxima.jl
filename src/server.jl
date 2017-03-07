@@ -54,9 +54,9 @@ function startserver(port)
     socketrequest = @spawn accept(server)
 
     if is_unix()
-        clientrequest = @spawn run(`maxima --server=$port --very-quiet --run-string="display2d: false\$"`)
+        clientrequest = @spawn run(pipeline(`maxima --server=$port --very-quiet --run-string="display2d: false\$"`, DevNull))
     else
-        clientrequest = @spawn run(`maxima.bat --server=$port --very-quiet --run-string="display2d: false\$"`)
+        clientrequest = @spawn run(pipeline(`maxima.bat --server=$port --very-quiet --run-string="display2d: false\$"`, DevNull))
     end
 
     socket = fetch(socketrequest)
