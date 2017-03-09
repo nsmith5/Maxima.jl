@@ -2,6 +2,8 @@
 
 language: julia
 
+# Linux builds are ubuntu so gcl is used by default and 
+# everything fails miserably
 os:
   - osx
 

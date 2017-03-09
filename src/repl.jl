@@ -31,7 +31,7 @@ function respond(repl, main)
         if !ok
             return REPL.transition(s, :abort)
         end
-        input = takebuf_string(buf)
+        input = String(take!(buf))
         if '%' in input
             tail = last(input)                              # chop the tail
             input = subst("$(ans)", "%", input[1:end-1])   # substitute
