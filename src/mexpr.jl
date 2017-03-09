@@ -54,7 +54,7 @@ end
 function unparse(expr::Expr)
 	io = IOBuffer()
 	show_expr(io, expr)
-	return String(a)
+	return String(io)
 end
 
 """
