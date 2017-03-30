@@ -193,6 +193,14 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "lib/simplify.html#Maxima.logexpand-Tuple{T}",
+    "page": "Simplification",
+    "title": "Maxima.logexpand",
+    "category": "Method",
+    "text": "logexpand{T}(expr::T)\n\nExpand logarithm terms in an expression\n\n\n\n"
+},
+
+{
     "location": "lib/simplify.html#Maxima.makefact-Tuple{T}",
     "page": "Simplification",
     "title": "Maxima.makefact",
@@ -286,14 +294,6 @@ var documenterSearchIndex = {"docs": [
     "title": "Maxima.trigsimp",
     "category": "Method",
     "text": "trigsimp{T}(expr::T)\n\nSimplify trigonometric expression\n\nExamples\n\njulia> trigsimp(m\"sin(x)^2 + cos(x)^2\")\n \n                                       1\n\n\n\n"
-},
-
-{
-    "location": "lib/simplify.html#Maxima.logexpand-Tuple{T}",
-    "page": "Simplification",
-    "title": "Maxima.logexpand",
-    "category": "Method",
-    "text": "logexpand{T}(expr::T)\n\nExpand logarithm terms in an expression\n\n\n\n"
 },
 
 {
