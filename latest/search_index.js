@@ -261,7 +261,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Simplification",
     "title": "Maxima.subst",
     "category": "Method",
-    "text": "subst(a, b, expr)\n\nSubstitute a for b in expr.\n\nExamples\n\njulia> subst(:a, :b, :(a^2 + b^2))\n:(2 * b ^ 2)\n\n\n\n\n"
+    "text": "subst(a, b, expr)\n\nReplace a with b in expr.\n\nExamples\n\njulia> subst(:b, :a, :(a^2 + b^2))\n:(2 * b ^ 2)\n\n\n\n\n"
 },
 
 {
