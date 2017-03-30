@@ -3,6 +3,8 @@
 using Maxima
 using Base.Test
 
+# Basic server and setup test
+
 # Conversion and evaluation test
 @test m"expand((1+x)^2)" == m"1 + 2*x + x^2"
 @test mcall(:(exp(im*π))) == -1
@@ -34,4 +36,7 @@ using Base.Test
 @test imagpart(m"a + %i*b") |> parse == :b
 @test demoivre(m"exp(a + %i * b)") == m"exp(a) * (cos(b) + %i * sin(b))"
 @test exponentialize(m"sin(x)") == m"-%i*(exp(%i * x) - exp(-%i * x))/2"
-@test float(m"1/3*x") == m"0.3333333333333333*x" 
+@test float(m"1/3*x") == m"0.3333333333333333*x"
+@test subst(:b, :a, :(a^2 + b^2)) == :(2 * b ^ 2)
+
+

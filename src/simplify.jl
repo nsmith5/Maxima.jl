@@ -408,11 +408,11 @@ end
 """
     subst(a, b, expr)
 
-Substitute `a` for `b` in `expr`.
+Replace `a` with `b` in `expr`.
 
 ## Examples
 ```julia
-julia> subst(:a, :b, :(a^2 + b^2))
+julia> subst(:b, :a, :(a^2 + b^2))
 :(2 * b ^ 2)
 
 ```
