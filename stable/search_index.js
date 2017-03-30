@@ -45,7 +45,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Manual",
     "title": "Getting Started",
     "category": "section",
-    "text": "To start using Maxima.jl, fire up a repl session and load the package.julia> using Maxima\n\njulia> Connecting Maxima to server on port 8080In the backend, Maxima.jl connects to a Maxima session over a TCP socket, so you'll see a statement print out about the port that Maxima connected on. You can play around a bit making Maxima expression with the @m_str string macro and evaluating them with mcall()using Maxima # hide\nm\"sin(x)/x\"\nm\"integrate(sin(x), x)\"\nmcall(ans)You can also interact with the Maxima session directly by entering the Maxima repl mode.julia>  # type ']'\n\nmaxima> 1 + 1;\n             \n               2\n\nmaxima> sin(x)$\n\nmaxima>"
+    "text": "To start using Maxima.jl, fire up a repl session and load the package.julia> using Maxima\n\njulia> Connecting Maxima to server on port 8080In the backend, Maxima.jl connects to a Maxima session over a TCP socket, so you'll see a statement print out about the port that Maxima connected on. You can play around a bit making Maxima expression with the @m_str string macro and evaluating them with mcall()using Maxima # hide\nm\"sin(x)/x\"\nm\"integrate(sin(x), x)\"\nmcall(ans)You can also interact with the Maxima session directly by entering the Maxima repl mode.julia>  # type ']'\n\nmaxima> 1 + 1;\n\n               2\n\nmaxima> sin(x)$\n\nmaxima>"
 },
 
 {
@@ -53,7 +53,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Manual",
     "title": "Maxima Expressions",
     "category": "section",
-    "text": "Maxima.jl revolves around the Maxima expression type: MExpr. Maxima expressions can be constructed using a constructor or a string macro and evaluated with mcall. using Maxima # hide\nMExpr(\"sin(x)/x\")\nm\"integrate(1 + x^2, x)\"\nmcall(ans)Maxima expressions don't neccessarily need to be valid Maxima, but a warning will be printed when the expression is printed and an error will be thrown if the expression is evaluated. using Maxima # hide\nm\"1+\"\nmcall(ans)\nm\"1/0\"\nmcall(ans)Maxima.jl also allows for translation between Maxima and Julia expressions. julia> g = m\"atan(%i*%pi*y)\"\n \n                                %i atanh(%pi y)\n\njulia> parse(g)\n:(im * atanh(y * π))\n\njulia> exp = :(sin(π*im))\n:(sin(π * im))\n\njulia> mexp = MExpr(exp)\n \n                                 %i sinh(%pi)\n"
+    "text": "Maxima.jl revolves around the Maxima expression type: MExpr. Maxima expressions can be constructed using a constructor or a string macro and evaluated with mcall.using Maxima # hide\nMExpr(\"sin(x)/x\")\nm\"integrate(1 + x^2, x)\"\nmcall(ans)Maxima expressions don't neccessarily need to be valid Maxima, but a warning will be printed when the expression is printed and an error will be thrown if the expression is evaluated.using Maxima # hide\nm\"1+\"\nmcall(ans)\nm\"1/0\"\nmcall(ans)Maxima.jl also allows for translation between Maxima and Julia expressions.julia> g = m\"atan(%i*%pi*y)\"\n\n                                %i atanh(%pi y)\n\njulia> parse(g)\n:(im * atanh(y * π))\n\njulia> exp = :(sin(π*im))\n:(sin(π * im))\n\njulia> mexp = MExpr(exp)\n\n                                 %i sinh(%pi)\n"
 },
 
 {
@@ -61,7 +61,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Manual",
     "title": "Basic Library",
     "category": "section",
-    "text": "Maxima.jl wraps many of the basic Maxima functions for convenience and these functions may be applied to Maxima expressions, Julia expressions or basic strings. By convention, the return type of these functions is determined by the most important input type. For instance, the integrate function returns the type of the integrand. julia> integrate(\"sin(x)\", :x)\n\"-cos(x)\"\n\njulia> integrate(:(sin(x)), \"x\")\n:(-cos(x))\n\njulia> integrate(m\"sin(x)\", 'x')\n\n					- cos(x)\nAs you can see, the basic library functions are very flexible about their argument types. Basically, as long as the argument string interpolates to the thing you want then it will work. For a list of all the functions that are wrapped take a look through the library reference section of the documentation. "
+    "text": "Maxima.jl wraps many of the basic Maxima functions for convenience and these functions may be applied to Maxima expressions, Julia expressions or basic strings. By convention, the return type of these functions is determined by the most important input type. For instance, the integrate function returns the type of the integrand.julia> integrate(\"sin(x)\", :x)\n\"-cos(x)\"\n\njulia> integrate(:(sin(x)), \"x\")\n:(-cos(x))\n\njulia> integrate(m\"sin(x)\", 'x')\n\n					- cos(x)\nAs you can see, the basic library functions are very flexible about their argument types. Basically, as long as the argument string interpolates to the thing you want then it will work. For a list of all the functions that are wrapped take a look through the library reference section of the documentation."
 },
 
 {
@@ -193,6 +193,14 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "lib/simplify.html#Maxima.logexpand-Tuple{T}",
+    "page": "Simplification",
+    "title": "Maxima.logexpand",
+    "category": "Method",
+    "text": "logexpand{T}(expr::T)\n\nExpand logarithm terms in an expression\n\n\n\n"
+},
+
+{
     "location": "lib/simplify.html#Maxima.makefact-Tuple{T}",
     "page": "Simplification",
     "title": "Maxima.makefact",
@@ -253,7 +261,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Simplification",
     "title": "Maxima.subst",
     "category": "Method",
-    "text": "subst(a, b, expr)\n\nSubstitute a for b in expr.\n\nExamples\n\njulia> subst(:a, :b, :(a^2 + b^2))\n:(2 * b ^ 2)\n\n\n\n\n"
+    "text": "subst(a, b, expr)\n\nReplace a with b in expr.\n\nExamples\n\njulia> subst(:b, :a, :(a^2 + b^2))\n:(2 * b ^ 2)\n\n\n\n\n"
 },
 
 {
@@ -289,19 +297,11 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "lib/simplify.html#Maxima.logexpand-Tuple{T}",
-    "page": "Simplification",
-    "title": "Maxima.logexpand",
-    "category": "Method",
-    "text": "logexpand{T}(expr::T)\n\nExpand logarithm terms in an expression\n\n\n\n"
-},
-
-{
     "location": "lib/simplify.html#Simplification-1",
     "page": "Simplification",
     "title": "Simplification",
     "category": "section",
-    "text": "CurrentModule = MaximaModules = [Maxima]\nPages = [\"simplify.jl\"]"
+    "text": "The following functions are used to simplify expressions. CurrentModule = MaximaModules = [Maxima]\nPages = [\"simplify.jl\"]"
 },
 
 {
@@ -313,11 +313,99 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "lib/calculus.html#Base.LinAlg.diff-Tuple{T,Any,Integer}",
+    "page": "Calculus",
+    "title": "Base.LinAlg.diff",
+    "category": "Method",
+    "text": "diff{T}(f, x, n)\n\nTake the nth order derivative of f with respect to x.\n\nfracpartial^n f(x)partial x^n\n\n\n\n"
+},
+
+{
+    "location": "lib/calculus.html#Base.LinAlg.diff-Tuple{T,Any}",
+    "page": "Calculus",
+    "title": "Base.LinAlg.diff",
+    "category": "Method",
+    "text": "diff{T}(f, x)\n\nTake the derivative of f with respect to x\n\nfracpartial f(x )partial x\n\n\n\n"
+},
+
+{
+    "location": "lib/calculus.html#Base.sum-Tuple{T,Any,Any,Any}",
+    "page": "Calculus",
+    "title": "Base.sum",
+    "category": "Method",
+    "text": "sum{T}(f::T, k, start, finish)\n\nCompute the sum,\n\n    sum_k=start^finish f(k)\n\nsimplifying the sum if possible.\n\nExamples\n\njulia> sum(m\"1/n^2\", :n, 1, \"inf\")\n\n                                        2\n                                     %pi\n                                     ----\n                                      6\n\n\n\n\n"
+},
+
+{
+    "location": "lib/calculus.html#Maxima.ilt-Tuple{T,Any,Any}",
+    "page": "Calculus",
+    "title": "Maxima.ilt",
+    "category": "Method",
+    "text": "ilt{T}(f::T, s, t)\n\nCompute the inverse Laplace transform of f(s).\n\nt is the new variable and s is the old variable.\n\n\n\n"
+},
+
+{
+    "location": "lib/calculus.html#Maxima.integrate-Tuple{T,Any,Any,Any}",
+    "page": "Calculus",
+    "title": "Maxima.integrate",
+    "category": "Method",
+    "text": "integrate{T}(f::T, x, a, b)\n\nEvaluate the definite integral of f with respect to x from a to b.\n\n    int_a^b f(x) dx\n\n\n\n"
+},
+
+{
     "location": "lib/calculus.html#Maxima.integrate-Tuple{T,Any}",
     "page": "Calculus",
     "title": "Maxima.integrate",
     "category": "Method",
-    "text": "integrate{T}(f::T, x)\n\nEvaluate the indefinite integral\n\nint f(x) dx\n\n\n\n"
+    "text": "integrate{T}(f::T, x)\n\nEvaluate the indefinite integral\n\nint f(x) dx\n\nExamples\n\njulia> integrate(:(sin(x)), :x)\n:(-cos(x))\n\nSee also\n\nrisch\n\n\n\n"
+},
+
+{
+    "location": "lib/calculus.html#Maxima.laplace-Tuple{T,Any,Any}",
+    "page": "Calculus",
+    "title": "Maxima.laplace",
+    "category": "Method",
+    "text": "laplace{T}(f::T, t, s)\n\nCompute the Laplace transform of f(t) where s is the new variable.\n\nmathcalLlbrace f rbrace (s) = int_0^infty f(t) e^-st dt\n\n\n\n"
+},
+
+{
+    "location": "lib/calculus.html#Maxima.limit-Tuple{Maxima.MExpr,Any,Any,Any}",
+    "page": "Calculus",
+    "title": "Maxima.limit",
+    "category": "Method",
+    "text": "limit{T}(f, x, a, side)\n\nTake the left or right sided limit as x approaches a of f(x).\n\nside may be either \"plus\" or \"minus\" denoting the right and left sided limit respectively\n\n\n\n"
+},
+
+{
+    "location": "lib/calculus.html#Maxima.limit-Tuple{T,Any,Any}",
+    "page": "Calculus",
+    "title": "Maxima.limit",
+    "category": "Method",
+    "text": "limit{T}(f, x, a)\n\nTake the limit as x approaches a of f(x)\n\nlim_x rightarrow a f(x)\n\n\n\n"
+},
+
+{
+    "location": "lib/calculus.html#Maxima.product-Tuple{T,Any,Any,Any}",
+    "page": "Calculus",
+    "title": "Maxima.product",
+    "category": "Method",
+    "text": "product{T}(f::T, k, start, finish)\n\nCompute the product,\n\n    prod_k=start^finish f(k)\n\nsimplifying the product if possible.\n\n\n\n"
+},
+
+{
+    "location": "lib/calculus.html#Maxima.risch-Tuple{T,Any}",
+    "page": "Calculus",
+    "title": "Maxima.risch",
+    "category": "Method",
+    "text": "risch{T}(f::T, x)\n\nCompute the indefinite integral of f with respect to x using the Risch algorithm\n\nSee also\n\nintegrate\n\n\n\n"
+},
+
+{
+    "location": "lib/calculus.html#Maxima.taylor-Tuple{T,Any,Any,Integer}",
+    "page": "Calculus",
+    "title": "Maxima.taylor",
+    "category": "Method",
+    "text": "taylor{T}(f::T, x, x0, n)\n\nTaylor expand f(x) around x_0 to nth order\n\n\n\n"
 },
 
 {
