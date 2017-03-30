@@ -326,7 +326,7 @@ julia> realpart(MExpr(\"a + %i*b\"))
 """
 function imagpart{T}(expr::T)
     mexpr = MExpr(expr)
-    out = mcall(MExpr("imgpart($mexpr)"))
+    out = mcall(MExpr("imagpart($mexpr)"))
     convert(T, out)
 end
 

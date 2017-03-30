@@ -32,7 +32,7 @@ Base.showerror(io::IO, err::MaximaSyntaxError) = print(io, err.errstr)
 
 const infix_ops = [:+, :-, :*, :/, :^]
 
-isinfix(sym) = sym in infix_ops
+isinfix(args) = args[1] in infix_ops && length(args) > 2
 
 show_expr(io::IO, ex) = print(io, ex)
 
@@ -40,8 +40,8 @@ function show_expr(io::IO, expr::Expr)
     if expr.head != :call 
         error("Block structure is not supported by Maxima.jl")
     else
-        seperator = isinfix(expr.args[1]) ? " $(expr.args[1]) " : ", "
-        !isinfix(expr.args[1]) ? show_expr(io, expr.args[1]) : nothing
+        seperator = isinfix(expr.args) ? " $(expr.args[1]) " : ", "
+        !isinfix(expr.args) ? show_expr(io, expr.args[1]) : nothing
         print(io, "(")
         args = expr.args[2:end]
         for (i, arg) in enumerate(args)
