@@ -13,12 +13,10 @@ end
 
 # Server setup
 
-const default_port = 8080			# choose default port
-@spawn startserver(default_port)	# spawn client-server pair
-atexit(killserver)					# register `killserver` to run on exit
+const ms = MaximaSession()	# Spin up a Maxima session
+atexit(() -> kill(ms))  	# Kill the session on exit
 
 # REPL setup
-
 repl_active = isdefined(Base, :active_repl)	# Is an active repl defined?
 interactive = isinteractive()				# In interactive mode?
 

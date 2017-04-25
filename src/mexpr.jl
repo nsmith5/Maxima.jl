@@ -1,6 +1,7 @@
 #   This file is part of Maxima.jl. It is licensed under the MIT license
 #   Copyright (c) 2016 Nathan Smith
 
+
 export MExpr,
        @m_str,
        parse,
@@ -12,11 +13,13 @@ export MExpr,
        ==,
        getindex
 
+
 import Base: parse,
              convert,
              error,
              ==,
              getindex
+
 
 type MaximaError <: Exception
 	errstr::Compat.String
@@ -24,11 +27,13 @@ end
 
 Base.showerror(io::IO, err::MaximaError) = print(io, err.errstr)
 
+
 type MaximaSyntaxError <: Exception
 	errstr::Compat.String
 end
 
 Base.showerror(io::IO, err::MaximaSyntaxError) = print(io, err.errstr)
+
 
 const infix_ops = [:+, :-, :*, :/, :^]
 
@@ -151,12 +156,6 @@ if VERSION < v"0.5.0"
     convert(::Type{ASCIIString}, m::MExpr) = ASCIIString(m.str)
 end
 
-function error(mexpr::MExpr)
-    input("$(mexpr.str);")
-    output()
-    return take!(errchannel)
-end
-
 """
 	mcall(m::MExpr)
 
@@ -175,22 +174,19 @@ julia> mcall(ans)
 ```
 """
 function mcall(m::MExpr)
-    put!(inputchannel, "$(m.str);")
-    output = take!(outputchannel)
-    err = take!(errchannel)
-    if err == 0
-        output = replace(output, '\n', "")
-        output = replace(output, " ", "")
-        return MExpr(output)
-    elseif err == 1
-		input("errormsg()\$")
-		err = take!(errchannel)
-		@assert err == 0
-		output = take!(outputchannel)
-        throw(MaximaError(output))
-    elseif err == 2
-        throw(MaximaSyntaxError(output))
-    end
+    write(ms, m.str)
+    output = read(ms)
+    if contains(maxerr, output)
+		write(ms, "errormsg()\$")
+		message = read(ms)
+		throw(MaximsError(message))
+	elseif contains(synerr, output)
+		throw(MaximaSyntaxError(output))
+	else
+		output = replace(output, '\n', "")
+		output = replace(output, " ", "")
+		return MExpr(output)
+	end
 end
 
 """

@@ -3,11 +3,12 @@
 
 
 const eot = Char(4)
-const synerr = " \nincorrect syntax" 
-const maxerr = " \n -- an error" 
+const synerr = "incorrect syntax" 
+const maxerr = "-- an error" 
 
 
 struct MaximaSession <: Base.AbstractPipe
+	
 	input::Pipe
 	output::Pipe
 	process::Base.Process
@@ -25,7 +26,7 @@ struct MaximaSession <: Base.AbstractPipe
 	end
 end
 
-Base.kill(ms::MaximaSession, signum=SIGTERM) = kill(ms.procss, signum=signum)
+Base.kill(ms::MaximaSession) = kill(ms.process)
 
 Base.process_exited(ms::MaximaSession) = process_exited(ms.process)
 
@@ -36,6 +37,5 @@ end
 
 function Base.read(ms::MaximaSession)
 	(readuntil(ms.output, eot) |> String 
-							   |> str -> rstrip(str, eot)
-                               |> str -> rstrip(str, '\n')) 
+	                           |> str -> rstrip(str, eot)) 
 end

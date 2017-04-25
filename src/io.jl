@@ -11,27 +11,16 @@ string(m::MExpr) = m.str
 show(io::IO, m::MExpr) = print(io, m.str)
 
 @compat function show(io::IO, ::MIME"text/plain", m::MExpr)
-	if error(m) == 0 
-		mcall(m"display2d: true")
-		input("'($m);")
-		str = output()
-      	str = rstrip(str, '\n')
-	    mcall(m"display2d: false")
-	    print(io, str)
-	else
-		warn("Invalid Maxima expression")
-		print(io, m.str)
-	end
+	mcall(m"display2d: true")
+	write(ms, "'($m)")
+	str = read(ms)
+    str = rstrip(str, '\n')
+	mcall(m"display2d: false")
+	print(io, str)
 end
 
 @compat function show(io::IO, ::MIME"text/latex", m::MExpr)
-    if error(m) == 0    
-        input("tex('($m))\$")
-        texstr = output()
-        print(io, texstr)
-    elseif error(m) == 1
-        print(io, "Maxima Error")
-   	elseif error(m) == 2
-        print(io, "Maxima Syntax Error")
-    end
+    write(ms, "tex('($m))\$")
+    texstr = read(ms)
+    print(io, texstr)
 end
