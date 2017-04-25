@@ -1,102 +1,41 @@
 #   This file is part of Maxima.jl. It is licensed under the MIT license
 #   Copyright (c) 2016 Nathan Smith
 
-const inputchannel = Channel{Compat.String}(1)
-const outputchannel = Channel{Compat.String}(1)
-const errchannel = Channel{Int}(1)
 
-"""
-    connect(port)
+const eot = Char(4)
+const synerr = " \nincorrect syntax" 
+const maxerr = " \n -- an error" 
 
-Starting at port `port`, try to start a TCP server. If this fails try the next
-port until successful.
 
-Note: If your starting port unreasonable (like 20) this will
-hang because it opens too many files in the search for an open port.
-"""
-function connect(port)
-    try
-        server = listen(port)
-        return server, port
-    catch err
-        connect(port + 1)
-    end
+struct MaximaSession <: Base.AbstractPipe
+	input::Pipe
+	output::Pipe
+	process::Base.Process
+	
+	function MaximaSession()
+		cmd = is_unix() ? `maxima --very-quiet` :
+			`maxima.bat --very-quiet`
+		
+		input = Pipe()
+		output = Pipe()
+		process = spawn(cmd, (input, output, STDERR))
+		
+		write(input, "display2d: false\$")
+		return new(input, output, process)
+	end
 end
 
-"""
-    input(str::String)
+Base.kill(ms::MaximaSession, signum=SIGTERM) = kill(ms.procss, signum=signum)
 
-Pass a string to the maxima client. If the string is not a valid maxima
-expression this may hang.
-"""
-function input(str::Compat.String)
-    put!(inputchannel, str)
-    return nothing
+Base.process_exited(ms::MaximaSession) = process_exited(ms.process)
+
+function Base.write(ms::MaximaSession, input::String)
+	write(ms.input, "$input;")
+	write(ms.input, "print(ascii(4))\$")
 end
 
-
-"""
-    output()
-
-Take raw output from the maxima client.
-"""
-function output()
-    take!(outputchannel)
-end
-
-"""
-    startserver(port)
-
-Start up a maxima client-server pair trying port `port` first.
-"""
-function startserver(port)
-    server, port = connect(port)
-    socketrequest = @spawn accept(server)
-
-    if is_unix()
-        clientrequest = @spawn run(pipeline(`maxima --server=$port --very-quiet --run-string="display2d: false\$"`, DevNull))
-    else
-        clientrequest = @spawn run(pipeline(`maxima.bat --server=$port --very-quiet --run-string="display2d: false\$"`, DevNull))
-    end
-
-    socket = fetch(socketrequest)
-
-    readavailable(socket)
-    write(socket, "errormsg: false\$")
-    stopchar = Char(4)
-
-    syn_err = " \nincorrect syntax"
-    max_err = " \n -- an error"
-
-    while true
-        input = take!(inputchannel)
-        write(socket, string(input, '\n'))
-		char = read(socket, Char)
-		write(socket, "print(ascii(4))\$\n")
-		str = string(char)
-		while char != stopchar
-			char = read(socket, Char)
-			str = string(str, char)
-            if str == max_err
-                put!(errchannel, 1)
-            elseif str == syn_err
-                put!(errchannel, 2)
-            end
-		end
-	    str = rstrip(str, stopchar)
-        put!(outputchannel, str)
-        isready(errchannel) || put!(errchannel, 0)
-    end
-    return nothing
-end
-
-"""
-    killserver()
-
-Kill maxima client with `quit();` call from the server
-"""
-function killserver()
-	input("quit();")
-	input(" ")			# Curiously, this line is important to insure the maxima client actually quit...
-	return nothing
+function Base.read(ms::MaximaSession)
+	(readuntil(ms.output, eot) |> String 
+							   |> str -> rstrip(str, eot)
+                               |> str -> rstrip(str, '\n')) 
 end
