@@ -11,6 +11,7 @@ string(m::MExpr) = m.str
 show(io::IO, m::MExpr) = print(io, m.str)
 
 @compat function show(io::IO, ::MIME"text/plain", m::MExpr)
+	# TODO: reimplement error handling here
 	mcall(m"display2d: true")
 	write(ms, "'($m)")
 	str = read(ms)
@@ -20,7 +21,8 @@ show(io::IO, m::MExpr) = print(io, m.str)
 end
 
 @compat function show(io::IO, ::MIME"text/latex", m::MExpr)
-    write(ms, "tex('($m))\$")
+    # TODO: and here...
+	write(ms, "tex('($m))\$")
     texstr = read(ms)
     print(io, texstr)
 end

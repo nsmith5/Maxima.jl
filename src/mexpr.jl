@@ -149,12 +149,14 @@ function parse(m::MExpr)
     parse(str)
 end
 
+
 convert(::Type{Compat.String}, m::MExpr) = m.str
 convert(::Type{Expr}, m::MExpr) = parse(m)
 if VERSION < v"0.5.0"
     convert(::Type{UTF8String}, m::MExpr) = UTF8String(m.str)
     convert(::Type{ASCIIString}, m::MExpr) = ASCIIString(m.str)
 end
+
 
 """
 	mcall(m::MExpr)
@@ -176,15 +178,16 @@ julia> mcall(ans)
 function mcall(m::MExpr)
     write(ms, m.str)
     output = read(ms)
-    if contains(maxerr, output)
-		write(ms, "errormsg()\$")
+    if contains(output, maxerr)
+		write(ms.input, "errormsg()\$")
+		write(ms.input, "print(ascii(4))\$")
 		message = read(ms)
 		throw(MaximsError(message))
-	elseif contains(synerr, output)
+	elseif contains(output, synerr)
 		throw(MaximaSyntaxError(output))
 	else
 		output = replace(output, '\n', "")
-		output = replace(output, " ", "")
+		output = replace(output, ' ', "")
 		return MExpr(output)
 	end
 end
