@@ -36,15 +36,24 @@ end
 Base.kill(ms::MaximaSession) = kill(ms.process)
 Base.process_exited(ms::MaximaSession) = process_exited(ms.process)
 
-function Base.write(ms::MaximaSession, input::String)
+function Base.write(ms::MaximaSession, input::Compat.String)
 	# The line break right ..v.. there is apparently very important...
 	write(ms.input, "$input;\n")
 	write(ms.input, "print(ascii(4))\$")
 end
 
 if VERSION < v"0.5.0"
-    Base.write(ms::MaximaSession, input::UTF8String) = write(ms, input)
-    Base.write(ms::MaximaSession, input::ASCIIString) = write(ms, input)
+    
+    function Base.write(ms::MaximaSession, input::UTF8String)
+        write(ms.input, "$input;\n")
+        write(ms.input, "print(ascii(4))\$")
+    end
+
+    function Base.write(ms::MaximaSession, input::ASCIIString)
+        write(ms.input, "$input;\n")
+        write(ms.input, "print(ascii(4))\$")
+    end
+
 end
 
 
