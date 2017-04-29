@@ -42,6 +42,14 @@ function Base.write(ms::MaximaSession, input::String)
 	write(ms.input, "print(ascii(4))\$")
 end
 
+if VERSION < v"0.5.0"
+    Base.write(ms::MaximaSession, input::UTF8String) = write(ms, input)
+    Base.write(ms::MaximaSession, input::ASCIIString) = write(ms, input)
+end
+
+
+
+
 function Base.read(ms::MaximaSession)
 	(readuntil(ms.output, EOT) |> String 
 	                           |> str -> rstrip(str, EOT)) 
