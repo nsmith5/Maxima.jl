@@ -38,5 +38,10 @@ using Base.Test
 @test exponentialize(m"sin(x)") == m"-%i*(exp(%i * x) - exp(-%i * x))/2"
 @test float(m"1/3*x") == m"0.3333333333333333*x"
 @test subst(:b, :a, :(a^2 + b^2)) == :(2 * b ^ 2)
-
+@test trigexpand(:(sin(2x) + cos(3y))) == :(-3 * cos(y) * sin(y) ^ 2 + cos(y) ^ 3 + 2 * cos(x) * sin(x))
+@test trigreduce(m"-sin(x)^2+3*cos(x)^2+x") == m"cos(2*x)/2+3*(cos(2*x)/2+1/2)+x-1/2"
+@test expand(:((a + b)^2)) == :(b ^ 2 + 2 * a * b + a ^ 2)
+@test expand("(a + b)^3") == "b^3+3*a*b^2+3*a^2*b+a^3"
+@test makefact(m"gamma(x)") == m"(x-1)!"
+@test makegamma(m"n! * m!") == m"gamma(m+1)*gamma(n+1)"
 

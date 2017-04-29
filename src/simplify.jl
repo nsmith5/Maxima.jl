@@ -25,8 +25,11 @@ export float,
 
 import Base: expand,
              diff,
-             factor,
              float
+
+if VERSION < v"0.6-"
+    import Base: factor
+end
 
 """
     ratsimp{T}(expr::T)
