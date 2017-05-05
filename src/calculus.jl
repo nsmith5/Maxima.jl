@@ -138,7 +138,7 @@ lim_{x \\rightarrow a} f(x)
 function limit{T}(exp::T, x, a)
     m = MExpr(exp)
     out = limit(m, x, a)
-    convert(T)
+    convert(T, out)
 end
 
 """
@@ -149,10 +149,10 @@ Take the left or right sided limit as ``x`` approaches ``a`` of ``f(x)``.
 `side` may be either `\"plus\"` or `\"minus\"` denoting the right and left sided limit respectively
 """
 function limit(m::MExpr, x, a, side)
-    if "$side" != "plus" || "minus"
+    if "$side" != "plus" && "$side" != "minus"
         error("Side of limit must be \"plus\" or \"minus\"")
     end
-    MExpr("limit($m, $x, $a, $side") |> mcall
+    MExpr("limit($m, $x, $a, $side)") |> mcall
 end
 
 function limit{T}(exp::T, x, a, side)
@@ -226,7 +226,7 @@ simplifying the product if possible.
 """
 function product{T}(exp::T, k, start, finish)
     sumexp = parse("product($exp, $k, $start, $finish)")
-    convert(T, sumexp |> MExpr |> mcall)a
+    convert(T, sumexp |> MExpr |> mcall)
 end
 
 function changevar(integral::MExpr, transform::MExpr, new, old)

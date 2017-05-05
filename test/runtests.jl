@@ -18,6 +18,22 @@ using Base.Test
 @test risch(:(1/x), :x) == :(log(x))
 @test diff(:(log(x)), "x") == :(1/x)
 @test diff(:(log(x)), :x, 2) == :(-1 / x ^ 2)
+@test limit(m"sin(x)/x", :x, 0) == m"1"
+@test limit(:(1/x), :x, :a) == :(1 / a)
+@test limit(:(1/x), :x, :a, :plus) == :(1/a)
+
+try
+    limit(:(1/x), :x, :a, "lalala")
+catch err
+    @test typeof(err) == ErrorException
+end
+
+@test sum(:(1 / k^2), :k, 1, Inf) == :(π ^ 2 / 6)
+@test sum(m"1 / k ^ 2", :k, 1, "inf") == m"%pi^2/6"
+@test taylor(m"sin(x)", :x, 0, 3) == m"x - x^3/6"
+@test taylor(:(sin(x)), :x, 0, 3) == :(x - x^3/6)
+
+
 
 # Simplification tests
 @test ratsimp(m"a + b/c") == m"(a * c + b) / c"
@@ -58,3 +74,5 @@ try
 catch err
     @test typeof(err) == Maxima.MaximaSyntaxError
 end
+
+
