@@ -15,5 +15,6 @@ include("calculus.jl")
 include("plot.jl")
 include("setup.jl")
 include("equations.jl")
+include("wrap.jl")
 
 end # module

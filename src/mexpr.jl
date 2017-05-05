@@ -152,6 +152,7 @@ end
 
 convert(::Type{Compat.String}, m::MExpr) = m.str
 convert(::Type{Expr}, m::MExpr) = parse(m)
+convert(::Type{Symbol}, m::MExpr) = parse(m) |> string |> Symbol
 if VERSION < v"0.5.0"
     convert(::Type{UTF8String}, m::MExpr) = UTF8String(m.str)
     convert(::Type{ASCIIString}, m::MExpr) = ASCIIString(m.str)
@@ -182,7 +183,7 @@ function mcall(m::MExpr)
 		write(ms.input, "errormsg()\$")
 		write(ms.input, "print(ascii(4))\$")
 		message = read(ms)
-		throw(MaximsError(message))
+		throw(MaximaError(message))
 	elseif contains(output, synerr)
 		throw(MaximaSyntaxError(output))
 	else
