@@ -42,7 +42,7 @@ isinfix(args) = args[1] in infix_ops && length(args) > 2
 show_expr(io::IO, ex) = print(io, ex)
 
 function show_expr(io::IO, expr::Expr)
-    if expr.head != :call 
+    if expr.head != :call
         error("Block structure is not supported by Maxima.jl")
     else
         seperator = isinfix(expr.args) ? " $(expr.args[1]) " : ", "
@@ -51,7 +51,7 @@ function show_expr(io::IO, expr::Expr)
         args = expr.args[2:end]
         for (i, arg) in enumerate(args)
             show_expr(io, arg)
-            i != endof(args) ? print(io, seperator) : print(io, ")") 
+            i != endof(args) ? print(io, seperator) : print(io, ")")
         end
     end
 end
@@ -182,7 +182,7 @@ function mcall(m::MExpr)
 		write(ms.input, "errormsg()\$")
 		write(ms.input, "print(ascii(4))\$")
 		message = read(ms)
-		throw(MaximsError(message))
+		throw(MaximaError(message))
 	elseif contains(output, synerr)
 		throw(MaximaSyntaxError(output))
 	else
