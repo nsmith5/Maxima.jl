@@ -45,3 +45,16 @@ using Base.Test
 @test makefact(m"gamma(x)") == m"(x-1)!"
 @test makegamma(m"n! * m!") == m"gamma(m+1)*gamma(n+1)"
 
+# Error handling
+
+try
+    mcall(m"1/0")
+catch err
+    @test typeof(err) == Maxima.MaximaError
+end
+
+try
+    mcall(m"1 + ")
+catch err
+    @test typeof(err) == Maxima.MaximaSyntaxError
+end
