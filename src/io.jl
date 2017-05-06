@@ -11,18 +11,32 @@ string(m::MExpr) = m.str
 show(io::IO, m::MExpr) = print(io, m.str)
 
 @compat function show(io::IO, ::MIME"text/plain", m::MExpr)
-	# TODO: reimplement error handling here
-	mcall(m"display2d: true")
-	write(ms, "'($m)")
-	str = read(ms)
-    str = rstrip(str, '\n')
-	mcall(m"display2d: false")
-	print(io, str)
+	write(ms.input, "'($m)\$\n print(ascii(4))\$")
+	out = (readuntil(ms.output, EOT) |> String 
+								     |> str -> rstrip(str, EOT))
+	if contains(out, synerr) || contains(out, maxerr)
+		warn("Invalid Maxima expression")
+		print(io, out)
+	else
+		mcall(m"display2d: true")
+		write(ms, "'($m)")
+		str = read(ms)
+		str = rstrip(str, '\n')
+		mcall(m"display2d: false")
+		print(io, str)
+	end
 end
 
 @compat function show(io::IO, ::MIME"text/latex", m::MExpr)
-    # TODO: and here...
-	write(ms, "tex('($m))\$")
-    texstr = read(ms)
-    print(io, texstr)
+	write(ms.input, "'($m)\$\n print(ascii(4))\$")
+	out = (readuntil(ms.output, EOT) |> String 
+								     |> str -> rstrip(str, EOT))
+	if contains(out, synerr) || contains(out, maxerr)
+		warn("Invalid Maxima expression")
+		print(io, out)
+	else
+		write(ms, "tex('($m))\$")
+		texstr = read(ms)
+		print(io, texstr)
+	end
 end

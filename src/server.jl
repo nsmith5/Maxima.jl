@@ -36,11 +36,13 @@ end
 Base.kill(ms::MaximaSession) = kill(ms.process)
 Base.process_exited(ms::MaximaSession) = process_exited(ms.process)
 
+
 function Base.write(ms::MaximaSession, input::Compat.String)
 	# The line break right ..v.. there is apparently very important...
 	write(ms.input, "$input;\n")
 	write(ms.input, "print(ascii(4))\$")
 end
+
 
 if VERSION < v"0.5.0"
     
@@ -55,8 +57,6 @@ if VERSION < v"0.5.0"
     end
 
 end
-
-
 
 
 function Base.read(ms::MaximaSession)
