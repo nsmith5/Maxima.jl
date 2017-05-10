@@ -1,6 +1,7 @@
 # This file is part of Maxima.jl. It is licensed under the MIT license
 #   Copyright (c) 2016 Nathan Smith
 
+__precompile__()
 module Maxima
 
 using Compat
