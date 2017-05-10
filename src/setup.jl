@@ -6,7 +6,7 @@ __init__() = (LoadMaxima(); atexit(() -> kill(ms)))
 
 function LoadMaxima()
     try
-	    is_unix() ? @compat	readstring(`maxima --version`) : 
+	    is_unix() ? (@compat readstring(`maxima --version`)) : 
             @compat readstring(`maxima.bat --version`)
     catch err
         error("Looks like Maxima is either not installed or not in the path")
