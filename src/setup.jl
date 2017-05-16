@@ -5,13 +5,6 @@ ResetMaxima() = (kill(ms); LoadMaxima())
 __init__() = (LoadMaxima(); atexit(() -> kill(ms)))
 
 function LoadMaxima()
-    try
-	    is_unix() ? (@compat readstring(`maxima --version`)) : 
-            @compat readstring(`maxima.bat --version`)
-    catch err
-        error("Looks like Maxima is either not installed or not in the path")
-    end
-
 	# Server setup
 
     global ms = MaximaSession()	# Spin up a Maxima session

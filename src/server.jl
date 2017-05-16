@@ -14,8 +14,7 @@ immutable MaximaSession <: Base.AbstractPipe
 	
 	function MaximaSession()
 		# If windows, executable is .bat
-		cmd = is_unix() ? `maxima --very-quiet` :
-			`maxima.bat --very-quiet`
+		cmd = `$maximacmd --very-quiet`
 		
 		# Setup pipes and maxima process
 		input = Pipe()

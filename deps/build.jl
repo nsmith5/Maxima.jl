@@ -2,10 +2,18 @@
 using Compat
 
 
-let maximacmd = is_unix() ? `maxima --version` : `maxima.bat --version`
+function writecmd(cmd)
+    open("maximacmd.jl", "w+") do file
+        write(file, "const maximacmd = $cmd")
+    end
+end
+
+
+let maximacmd = is_unix() ? `maxima` : `maxima.bat`
     try
-        run(maximacmd)
+        info(@compat readstring(`$maximacmd --version`))
         info("Maxima already installed")
+        writecmd(maximacmd)
         exit(0)
     catch err
         info("Maxima not installed or in path, attempting fresh installation..")
@@ -18,9 +26,10 @@ if is_apple()
     info("Installing from Maxima from 'homebrew/science'")
     Homebrew.add("homebrew/science/maxima")
     info("Build successful")
+    writecmd(`$(Homebrew.prefix())/bin/maxima`)
     exit(0)
 else
-    warn(
+    error(
     """Maxima.jl does not yet support builds on your OS. 
     Install or build and add to your path to start using 
     Maxima.jl"""
