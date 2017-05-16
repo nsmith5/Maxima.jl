@@ -43,10 +43,10 @@ show_expr(io::IO, ex) = print(io, ex)
 
 function show_expr(io::IO, expr::Expr)
     if expr.head != :call
-        error("Block structure is not supported by Maxima.jl")
+        error("Nested block structure is not supported by Maxima.jl")
     else
         seperator = isinfix(expr.args) ? " $(expr.args[1]) " : ", "
-        !isinfix(expr.args) ? show_expr(io, expr.args[1]) : nothing
+        !isinfix(expr.args) && show_expr(io, expr.args[1])
         print(io, "(")
         args = expr.args[2:end]
         for (i, arg) in enumerate(args)
@@ -57,9 +57,18 @@ function show_expr(io::IO, expr::Expr)
 end
 
 function unparse(expr::Expr)
-	io = IOBuffer()
-	show_expr(io, expr)
-	return String(io)
+  str = Array{Compat.String,1}(0)
+	io = IOBuffer();
+  if expr.head == :block
+    for line ∈ expr.args
+      show_expr(io,line)
+      push!(str,takebuf_string(io))
+    end
+    return str
+	else
+    show_expr(io, expr)
+    return push!(str,String(io))
+  end
 end
 
 """
@@ -75,8 +84,9 @@ type MExpr <: Any
 str :: String
 """
 type MExpr
-	str::Compat.String
+	str::Array{Compat.String,1}
 end
+MExpr(str::Compat.String) = MExpr(push!(Array{Compat.String,1}(0),str))
 
 macro m_str(str)
 	MExpr(str)
@@ -101,11 +111,7 @@ const jl_to_m = Dict("e" => "%e",
     "im" => "%i",
     "Inf" => "inf")
 
-function _subst(a, b, expr)
-    mstr = "subst($a, $b, '($expr))" |> MExpr
-	mstr = mcall(mstr)
-	return mstr.str
-end
+_subst(a, b, expr) = "subst($a, $b, '($expr))" |> MExpr |> mcall
 
 """
     MExpr(expr::Expr)
@@ -122,11 +128,13 @@ julia> MExpr(:(sin(x*im) + cos(y*φ)))
 """
 function MExpr(expr::Expr)
 	#str = "$expr"
-    str = unparse(expr)
+  str = unparse(expr)
+  for h in 1:length(str)
     for key in keys(jl_to_m)
-        str = _subst(jl_to_m[key], key, str)
+        str[h] = _subst(jl_to_m[key], key, str[h])
     end
-    MExpr(str)
+  end
+  return MExpr(str)
 end
 
 """
@@ -142,15 +150,24 @@ julia> parse(m\"sin(%i*x)\")
 ```
 """
 function parse(m::MExpr)
-    str = m.str
-    for key in keys(m_to_jl)
-        str = _subst(m_to_jl[key], key, str)
+  pexpr = Array{Expr,1}(0); sexpr = Array{Compat.String,1}(0)
+  for h in 1:length(m.str)
+    sp = split(replace(m.str[h],r"\$",";"),';')
+    for str in sp
+      push!(sexpr,mcall(MExpr("$(String(str))")).str...)
     end
-    parse(str)
+  end
+  for h in 1:length(sexpr)
+    for key in keys(m_to_jl)
+      sexpr[h] = _subst(m_to_jl[key], key, sexpr[h]).str[1]
+    end
+    push!(pexpr,parse(sexpr[h]))
+  end
+  return length(pexpr) == 1 ? pexpr[1] : Expr(:block,pexpr...)
 end
 
 
-convert(::Type{Compat.String}, m::MExpr) = m.str
+convert(::Type{Compat.String}, m::MExpr) = join(m.str,"; ")
 convert(::Type{Expr}, m::MExpr) = parse(m)
 if VERSION < v"0.5.0"
     convert(::Type{UTF8String}, m::MExpr) = UTF8String(m.str)
@@ -176,20 +193,23 @@ julia> mcall(ans)
 ```
 """
 function mcall(m::MExpr)
-    write(ms, m.str)
+    write(ms, replace(convert(String,m),r";","; print(ascii(3))\$ "))
     output = read(ms)
     if contains(output, maxerr)
-		write(ms.input, "errormsg()\$")
-		write(ms.input, "print(ascii(4))\$")
-		message = read(ms)
-		throw(MaximaError(message))
-	elseif contains(output, synerr)
-		throw(MaximaSyntaxError(output))
-	else
-		output = replace(output, '\n', "")
-		output = replace(output, ' ', "")
-		return MExpr(output)
-	end
+		    write(ms.input, "errormsg()\$")
+		    write(ms.input, "print(ascii(4))\$")
+		    message = read(ms)
+		    throw(MaximaError(message))
+	  elseif contains(output, synerr)
+		    throw(MaximaSyntaxError(output))
+	  else
+		    sp = split(output, '\x03')
+        for k in 1:length(sp)
+          sp[k] = replace(sp[k], '\n', "")
+          sp[k] = replace(sp[k], ' ', "")
+        end
+        return MExpr(sp)
+    end
 end
 
 """
@@ -214,7 +234,9 @@ function mcall{T}(expr::T)
 end
 
 function ==(m::MExpr, n::MExpr)
-    return mcall(MExpr("is($m = $n)")) |> parse |> eval
+    out = mcall("is($m = $n)")
+    contains(out,"false") ? (out = "0") : (out = "1")
+    return out |> parse |> eval |> Bool
 end
 
 function getindex(m::MExpr, i)
