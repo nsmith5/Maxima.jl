@@ -6,7 +6,7 @@ __init__() = (LoadMaxima(); atexit(() -> kill(ms)))
 
 function LoadMaxima()
     try
-	    is_unix() ? (@compat readstring(`maxima --version`)) : 
+	    is_unix() ? (@compat readstring(`maxima --version`)) :
             @compat readstring(`maxima.bat --version`)
     catch err
         error("Looks like Maxima is either not installed or not in the path")
@@ -23,4 +23,7 @@ function LoadMaxima()
     if repl_active && interactive
 	    repl_init(Base.active_repl)
     end
+
+    #write(ms,"print(ascii(3))")
+    readavailable(ms.output)
 end
