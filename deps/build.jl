@@ -24,7 +24,7 @@ end
 if is_apple()
     import Homebrew
     info("Installing from Maxima from 'homebrew/science'")
-    Homebrew.update()
+    Homebrew.add("sbcl")
     Homebrew.add("homebrew/science/maxima")
     info("Build successful")
     writecmd(`$(Homebrew.prefix())/bin/maxima`)
