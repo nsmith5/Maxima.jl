@@ -12,7 +12,7 @@ if VERSION < v"0.6-"
     import Base: factor
 end
 
-simfuns = [
+simfun = [
   :ratsimp,:radcan,
   :factor,:gfactor,:expand,
   :logcontract,
@@ -21,33 +21,29 @@ simfuns = [
   :rectform,:polarform,
   :realpart,:imagpart,
   :demoivre,
-  :exponentialize
+  :exponentialize,
   :float]
 
-:(export $(simfuns...)) |> eval
+:(export $(simfun...)) |> eval
 
-for i ∈ simfuns
-  for t ∈ [:(Compat.String),:Expr]
+ty = [:(Compat.String),:Expr]
+
+for fun in simfun
+  for T in ty
     quote
-      function $i(expr::$t)
+      function $fun(expr::$T)
         mexpr = MExpr(expr)
-        out = mcall(MExpr($(string(i))*"($mexpr)"))
-        convert($t, out)
+        out = mcall(MExpr($(string(fun))*"($mexpr)"))
+        convert($T, out)
       end
     end |> eval
   end
   quote
-    function $i(expr::MExpr)
-      mcall(MExpr($(string(i))*"($expr)"))
+    function $fun(expr::MExpr)
+      mcall(MExpr($(string(fun))*"($expr)"))
     end
   end |> eval
 end
-
-#function $i{T}(expr::T)
-#  mexpr = MExpr(expr)
-#  out = mcall(MExpr($(string(i))*"($mexpr)"))
-#  convert(T, out)
-#end
 
 @doc """
     ratsimp{T}(expr::T)
@@ -145,11 +141,18 @@ Contract logarithms in expression
     logexpand{T}(expr::T)
 
 Expand logarithm terms in an expression
-"""
-function logexpand{T}(expr::T)
-    mexpr = MExpr(expr)
-    out = mcall(MExpr("$mexpr, logexpand=super"))
-    convert(T, out)
+""" logexpand
+for t in ty
+  quote
+    function logexpand(expr::$t)
+      mexpr = MExpr(expr)
+      out = mcall(MExpr("$mexpr, logexpand=super"))
+      convert($t, out)
+    end
+  end |> eval
+end
+function logexpand(expr::MExpr)
+  out = mcall(MExpr("$expr, logexpand=super"))
 end
 
 @doc """
@@ -318,7 +321,7 @@ julia> float(m\"1/3*x\")
 ```
 """ float
 
-"""
+@doc """
     subst(a, b, expr)
 
 Replace `a` with `b` in `expr`.
@@ -329,9 +332,16 @@ julia> subst(:b, :a, :(a^2 + b^2))
 :(2 * b ^ 2)
 
 ```
-"""
-function subst{T}(a, b, expr::T)
-    mexpr = MExpr(expr)
-    out = mcall(MExpr("subst($a, $b, $mexpr)"))
-    convert(T, out)
+""" subst
+for t in ty
+  quote
+    function subst(a, b, expr::$t)
+      mexpr = MExpr(expr)
+      out = mcall(MExpr("subst($a, $b, $mexpr)"))
+      convert($t, out)
+    end
+  end |> eval
+end
+function subst(expr::MExpr)
+  out = mcall(MExpr("subst($a, $b, $expr)"))
 end

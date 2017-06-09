@@ -93,10 +93,10 @@ macro m_str(str)
 end
 
 const m_to_jl = Dict("%e" => "e",
-    "%pi"   =>  "π",
+    "%pi"   =>  "pi",
     "%i"    =>  "im",
     "%gamma" => "eulergamma",
-    "%phi"  =>  "φ",
+    "%phi"  =>  "golden",
     "inf"   =>  "Inf",
     "minf"  =>  "-Inf")
 
@@ -150,7 +150,7 @@ julia> parse(m\"sin(%i*x)\")
 ```
 """
 function parse(m::MExpr)
-  pexpr = Array{Expr,1}(0); sexpr = Array{Compat.String,1}(0)
+  pexpr = Array{Any,1}(0); sexpr = Array{Compat.String,1}(0)
   for h in 1:length(m.str)
     sp = split(replace(m.str[h],r"\$",";"),';')
     for str in sp
@@ -166,7 +166,7 @@ function parse(m::MExpr)
   return length(pexpr) == 1 ? pexpr[1] : Expr(:block,pexpr...)
 end
 
-
+convert(::Type{MExpr}, m::MExpr) = m
 convert(::Type{Compat.String}, m::MExpr) = join(m.str,"; ")
 convert(::Type{Expr}, m::MExpr) = parse(m)
 if VERSION < v"0.5.0"
