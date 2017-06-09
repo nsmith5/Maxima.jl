@@ -85,12 +85,19 @@ str :: String
 """
 type MExpr
 	str::Array{Compat.String,1}
+  MExpr(m::Array{Compat.String,1}) = new(m)
+  MExpr(m::Array{SubString{String},1}) = new(convert(Array{Compat.String,1},m))
 end
 MExpr(str::Compat.String) = MExpr(push!(Array{Compat.String,1}(0),str))
+MExpr(m::Any) = MExpr("$m")
 
 macro m_str(str)
 	MExpr(str)
 end
+
+*(x::MExpr,y::Compat.String) = MExpr(push!(deepcopy(x.str),y))
+*(x::Compat.String,y::MExpr) = MExpr(unshift!(deepcopy(y.str),x))
+*(x::MExpr,y::MExpr) = MExpr(vcat(x.str...,y.str...))
 
 const m_to_jl = Dict("%e" => "e",
     "%pi"   =>  "pi",
@@ -167,8 +174,9 @@ function parse(m::MExpr)
 end
 
 convert(::Type{MExpr}, m::MExpr) = m
+convert(::Type{Array{Compat.String,1}}, m::MExpr) = m.str
 convert(::Type{Compat.String}, m::MExpr) = join(m.str,"; ")
-convert(::Type{Expr}, m::MExpr) = parse(m)
+convert{T}(::Type{T}, m::MExpr) = parse(m)
 if VERSION < v"0.5.0"
     convert(::Type{UTF8String}, m::MExpr) = UTF8String(m.str)
     convert(::Type{ASCIIString}, m::MExpr) = ASCIIString(m.str)
