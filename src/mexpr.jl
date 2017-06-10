@@ -18,7 +18,9 @@ import Base: parse,
              convert,
              error,
              ==,
-             getindex
+             getindex,
+             *,
+             split
 
 
 type MaximaError <: Exception
@@ -42,9 +44,7 @@ isinfix(args) = args[1] in infix_ops && length(args) > 2
 show_expr(io::IO, ex) = print(io, ex)
 
 function show_expr(io::IO, expr::Expr)
-    if expr.head != :call
-        error("Nested block structure is not supported by Maxima.jl")
-    else
+    if expr.head == :call
         seperator = isinfix(expr.args) ? " $(expr.args[1]) " : ", "
         !isinfix(expr.args) && show_expr(io, expr.args[1])
         print(io, "(")
@@ -53,6 +53,8 @@ function show_expr(io::IO, expr::Expr)
             show_expr(io, arg)
             i != endof(args) ? print(io, seperator) : print(io, ")")
         end
+    else
+      error("Nested :$(expr.head) block structure not supported by Reduce.jl")
     end
 end
 
@@ -86,8 +88,8 @@ str :: String
 type MExpr
 	str::Array{Compat.String,1}
   MExpr(m::Array{Compat.String,1}) = new(m)
-  MExpr(m::Array{SubString{String},1}) = new(convert(Array{Compat.String,1},m))
 end
+MExpr(m::Array{SubString{String},1}) = MExpr(convert(Array{Compat.String,1},m))
 MExpr(str::Compat.String) = MExpr(push!(Array{Compat.String,1}(0),str))
 MExpr(m::Any) = MExpr("$m")
 
@@ -99,24 +101,39 @@ end
 *(x::Compat.String,y::MExpr) = MExpr(unshift!(deepcopy(y.str),x))
 *(x::MExpr,y::MExpr) = MExpr(vcat(x.str...,y.str...))
 
+function split(m::MExpr); n = Array{Compat.String,1}(0)
+  for h in 1:length(m.str)
+    p = split(replace(m.str[h],r"\$",";"),';')
+    for t in 1:length(p); push!(n,p[t]); end
+  end
+  return MExpr(n)
+end
+
 const m_to_jl = Dict("%e" => "e",
-    "%pi"   =>  "pi",
+    "%pi"   =>  "π",
     "%i"    =>  "im",
     "%gamma" => "eulergamma",
-    "%phi"  =>  "golden",
+    "%phi"  =>  "φ",
     "inf"   =>  "Inf",
     "minf"  =>  "-Inf")
+
+const m_to_jl_utf = Dict(":=" => "=")
 
 const jl_to_m = Dict("e" => "%e",
     "eu" => "%e",
     "pi" => "%pi",
-    "π" => "%pi",
+    "π" => "pi",
     "γ" => "%gamma",
     "eulergamma" => "%gamma",
     "golden" => "%phi",
     "φ" => "%phi",
     "im" => "%i",
     "Inf" => "inf")
+
+const jl_to_m_utf = Dict("=" => ":=")
+
+const repmjl = Dict(m_to_jl...,m_to_jl_utf...)
+const repjlm = Dict(jl_to_m...,jl_to_m_utf...)
 
 _subst(a, b, expr) = "subst($a, $b, '($expr))" |> MExpr |> mcall
 
@@ -137,8 +154,9 @@ function MExpr(expr::Expr)
 	#str = "$expr"
   str = unparse(expr)
   for h in 1:length(str)
-    for key in keys(jl_to_m)
-        str[h] = _subst(jl_to_m[key], key, str[h])
+    for key in keys(repjlm)
+        str[h] = replace(str[h],key,repjlm[key])
+        #str[h] = _subst(jl_to_m[key], key, str[h])
     end
   end
   return MExpr(str)
@@ -157,16 +175,11 @@ julia> parse(m\"sin(%i*x)\")
 ```
 """
 function parse(m::MExpr)
-  pexpr = Array{Any,1}(0); sexpr = Array{Compat.String,1}(0)
-  for h in 1:length(m.str)
-    sp = split(replace(m.str[h],r"\$",";"),';')
-    for str in sp
-      push!(sexpr,mcall(MExpr("$(String(str))")).str...)
-    end
-  end
+  pexpr = Array{Any,1}(0); sexpr = split(m).str
   for h in 1:length(sexpr)
-    for key in keys(m_to_jl)
-      sexpr[h] = _subst(m_to_jl[key], key, sexpr[h]).str[1]
+    for key in keys(repmjl)
+      sexpr[h] = replace(sexpr[h],key,repmjl[key])
+      #sexpr[h] = _subst(m_to_jl[key], key, sexpr[h]).str[1]
     end
     push!(pexpr,parse(sexpr[h]))
   end
@@ -242,9 +255,16 @@ function mcall{T}(expr::T)
 end
 
 function ==(m::MExpr, n::MExpr)
-    out = mcall("is($m = $n)")
-    contains(out,"false") ? (out = "0") : (out = "1")
-    return out |> parse |> eval |> Bool
+    r = split(m).str
+    s = split(n).str
+    l=length(r)
+    l!=length(s) && (return false)
+    b = true
+    for j ∈ 1:l
+        out = mcall("is($(r[j]) = $(s[j]))")
+        b &= !contains(out,"false")
+    end
+    return b
 end
 
 function getindex(m::MExpr, i)

@@ -1,10 +1,10 @@
 #   This file is part of Maxima.jl. It is licensed under the MIT license
 #   Copyright (c) 2016 Nathan Smith
 
-ResetMaxima() = (kill(ms); LoadMaxima())
-__init__() = (LoadMaxima(); atexit(() -> kill(ms)))
+Reset() = (kill(ms); Load())
+__init__() = (Load(); atexit(() -> kill(ms)))
 
-function LoadMaxima()
+function Load()
     try
 	    is_unix() ? (@compat readstring(`maxima --version`)) :
             @compat readstring(`maxima.bat --version`)
@@ -22,8 +22,12 @@ function LoadMaxima()
 
     if repl_active && interactive
 	    repl_init(Base.active_repl)
+    else # package is loaded from ~/.juliarc.jl
+      atreplinit() do repl # check if OhMyREPL is loaded
+        !isdefined(Main,:OhMyREPL) && (repl.interface = Base.REPL.setup_interface(repl))
+        repl_init(Base.active_repl)
+      end
     end
 
-    #write(ms,"print(ascii(3))")
-    readavailable(ms.output)
+    mcall("1") # clears out any initial data
 end
