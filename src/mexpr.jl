@@ -53,6 +53,18 @@ function show_expr(io::IO, expr::Expr)
             show_expr(io, arg)
             i != endof(args) ? print(io, seperator) : print(io, ")")
         end
+    elseif expr.head == :(=)
+        show_expr(io,expr.args[1])
+        print(io,": ")
+        show_expr(io,expr.args[2])
+    elseif expr.head == :function
+        show_expr(io,expr.args[1])
+        print(io," = block([], ")
+        args = expr.args[2].args
+        for (i, arg) in enumerate(args)
+            show_expr(io, arg)
+            i != endof(args) ? print(io, ", ") : print(io, ")")
+        end
     else
       error("Nested :$(expr.head) block structure not supported by Reduce.jl")
     end

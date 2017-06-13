@@ -39,7 +39,7 @@ function respond(repl, main)
         end
         if !isempty(strip(input))
 		    try
-                global ans = MExpr(input[1:end-1])
+                global ans = MExpr(input[1:end-1]) |> mcall |> MExpr
                 REPL.reset(repl)
                 if input[end] == ';'
 		            REPL.print_response(repl, ans, nothing, true, Base.have_color)
