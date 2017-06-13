@@ -28,7 +28,7 @@ catch err
     @test typeof(err) == ErrorException
 end
 
-@test sum(:(1 / k^2), :k, 1, Inf) == :(pi ^ 2 / 6)
+@test sum(:(1 / k^2), :k, 1, Inf) == :(π ^ 2 / 6)
 @test sum(m"1 / k ^ 2", :k, 1, "inf") == m"%pi^2/6"
 @test taylor(m"sin(x)", :x, 0, 3) == m"x - x^3/6"
 @test taylor(:(sin(x)), :x, 0, 3) == :(x - x^3/6)
@@ -46,7 +46,7 @@ end
 @test logexpand(m"log(x/y)") == m"log(x) - log(y)"
 @test trigsimp(m"sin(x)^2 + cos(x)^2") |> parse == 1
 @test trigrat(MExpr(:(exp(im*x) + exp(-im*x)))) == MExpr(:(2 * cos(x)))
-@test rectform(:(R*e^(im*theta))) == :(R * im * sin(theta) + R * cos(theta))
+@test rectform(:(R*e^(im*theta))) == :(im * R * sin(theta) + R * cos(theta))
 @test polarform(m"a + %i*b") == m"sqrt(a^2 + b^2)*exp(%i * atan2(b, a))"
 @test realpart(m"a + %i*b") |> parse == :a
 @test imagpart(m"a + %i*b") |> parse == :b

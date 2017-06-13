@@ -59,7 +59,7 @@ function show_expr(io::IO, expr::Expr)
         show_expr(io,expr.args[2])
     elseif expr.head == :function
         show_expr(io,expr.args[1])
-        print(io," = block([], ")
+        print(io," := block([], ")
         args = expr.args[2].args
         for (i, arg) in enumerate(args)
             show_expr(io, arg)
@@ -129,7 +129,7 @@ const m_to_jl = Dict("%e" => "e",
     "inf"   =>  "Inf",
     "minf"  =>  "-Inf")
 
-const m_to_jl_utf = Dict(":=" => "=")
+const m_to_jl_utf = Dict(":" => "=")
 
 const jl_to_m = Dict("e" => "%e",
     "eu" => "%e",
@@ -142,10 +142,7 @@ const jl_to_m = Dict("e" => "%e",
     "im" => "%i",
     "Inf" => "inf")
 
-const jl_to_m_utf = Dict("=" => ":=")
-
 const repmjl = Dict(m_to_jl...,m_to_jl_utf...)
-const repjlm = Dict(jl_to_m...,jl_to_m_utf...)
 
 _subst(a, b, expr) = "subst($a, $b, '($expr))" |> MExpr |> mcall
 
@@ -166,9 +163,8 @@ function MExpr(expr::Expr)
 	#str = "$expr"
   str = unparse(expr)
   for h in 1:length(str)
-    for key in keys(repjlm)
-        str[h] = replace(str[h],key,repjlm[key])
-        #str[h] = _subst(jl_to_m[key], key, str[h])
+    for key in keys(jl_to_m)
+        str[h] = _subst(jl_to_m[key], key, str[h])
     end
   end
   return MExpr(str)

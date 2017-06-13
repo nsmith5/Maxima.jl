@@ -39,7 +39,7 @@ function respond(repl, main)
         end
         if !isempty(strip(input))
 		    try
-                global ans = MExpr(input[1:end-1]) |> mcall |> MExpr
+                global ans = MExpr(input[1:end-1]) |> mcall
                 REPL.reset(repl)
                 if input[end] == ';'
 		            REPL.print_response(repl, ans, nothing, true, Base.have_color)
@@ -72,7 +72,7 @@ function LineEdit.complete_line(c::MaximaCompletionProvider, s)
     # complete latex
     full = LineEdit.input_string(s)
     ret, range, should_complete = REPLCompletions.bslash_completions(full, endof(partial))[2]
-
+    
 	if length(ret) > 0 && should_complete
         return ret, partial[range], true
     end
