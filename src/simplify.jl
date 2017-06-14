@@ -39,8 +39,30 @@ for fun in simfun
     end |> eval
   end
   quote
-    function $fun(expr::MExpr)
-      mcall(MExpr($(string(fun))*"($expr)"))
+    function $fun(m::MExpr)
+      nsr = Array{Compat.String,1}(0)
+      sexpr = split(m).str
+      for h in 1:length(sexpr)
+        if contains(sexpr[h],":=")
+          sp = split(sexpr[h],":=")
+          push!(nsr,String(sp[1])*":="*string(sp[2] |> String |> MExpr |> $fun))
+        elseif contains(sexpr[h],"block([],")
+          rp = replace(sexpr[h],"block([],","") |> chop
+          sp = split(rp,",")
+          ns = "block([],"
+          for u in 1:length(sp)
+            ns = ns*string(sp[u] |> String |> MExpr |> $fun)
+          end
+          ns = ns*")"
+          push!(nsr,ns)
+        elseif contains(sexpr[h],":")
+          sp = split(sexpr[h],":")
+          push!(nsr,String(sp[1])*":"*string(sp[2] |> String |> MExpr |> parse))
+        else
+          push!(nsr,$(string(fun))*"($(sexpr[h]))" |> MExpr |> mcall)
+        end
+      end
+      return MExpr(nsr)
     end
   end |> eval
 end
