@@ -66,7 +66,7 @@ function show_expr(io::IO, expr::Expr)
             i != endof(args) ? print(io, ", ") : print(io, ")")
         end
     else
-      error("Nested :$(expr.head) block structure not supported by Reduce.jl")
+      error("Nested :$(expr.head) block structure not supported by Maxima.jl")
     end
 end
 
@@ -81,7 +81,7 @@ function unparse(expr::Expr)
     return str
 	else
     show_expr(io, expr)
-    return push!(str,String(io))
+    return push!(str,Compat.String(io))
   end
 end
 
@@ -101,7 +101,7 @@ type MExpr
 	str::Array{Compat.String,1}
   MExpr(m::Array{Compat.String,1}) = new(m)
 end
-MExpr(m::Array{SubString{String},1}) = MExpr(convert(Array{Compat.String,1},m))
+MExpr(m::Array{SubString{Compat.String},1}) = MExpr(convert(Array{Compat.String,1},m))
 MExpr(str::Compat.String) = MExpr(push!(Array{Compat.String,1}(0),str))
 MExpr(m::Any) = MExpr("$m")
 
@@ -187,18 +187,18 @@ function parse(m::MExpr)
     end
     if contains(sexpr[h],":=")
       sp = split(sexpr[h],":=")
-      push!(pexpr,Expr(:function,parse(sp[1]),sp[2] |> String |> MExpr |> parse))
+      push!(pexpr,Expr(:function,parse(sp[1]),sp[2] |> Compat.String |> MExpr |> parse))
     elseif contains(sexpr[h],"block([],")
       rp = replace(sexpr[h],"block([],","") |> chop
       sp = split(rp,",")
       ep = Array{Any,1}(length(sp))
       for u in 1:length(sp)
-        ep[u] = sp[u] |> String |> MExpr |> parse
+        ep[u] = sp[u] |> Compat.String |> MExpr |> parse
       end
       push!(pexpr,Expr(:block,ep...))
     elseif contains(sexpr[h],":")
       sp = split(sexpr[h],":")
-      push!(pexpr,Expr(:(=),parse(sp[1]),sp[2] |> String |> MExpr |> parse))
+      push!(pexpr,Expr(:(=),parse(sp[1]),sp[2] |> Compat.String |> MExpr |> parse))
     else
       push!(pexpr,parse(sexpr[h]))
     end
@@ -234,7 +234,7 @@ julia> mcall(ans)
 ```
 """
 function mcall(m::MExpr)
-    write(ms, replace(convert(String,m),r";","; print(ascii(3))\$ "))
+    write(ms, replace(convert(Compat.String,m),r";","; print(ascii(3))\$ "))
     output = read(ms)
     if contains(output, maxerr)
 		    write(ms.input, "errormsg()\$")
