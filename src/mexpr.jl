@@ -159,25 +159,7 @@ function MExpr(expr::Expr)
 	#str = "$expr"
   str = unparse(expr)
   for h in 1:length(str)
-    for key in keys(jl_to_m) #=
-      if contains(str[h],":=")
-        sp = split(str[h],":=")
-        str[h] = String(str[1])*":="*(_subst(jl_to_m[key],key,String(sp[2]))).str
-      elseif contains(str[h],"block([],")
-        rp = replace(str[h],"block([],","") |> chop
-        sp = split(rp,",")
-        ns = "block([],"
-        for u in 1:length(sp)
-          ns = ns*(_subst(jl_to_m[key],key,String(sp[u]))).str
-        end
-        ns = ns*")"
-        str[h] = ns
-      elseif contains(str[h],":")
-        sp = split(str[h],":")
-        str[h] = String(sp[1])*":"*(_subst(jl_to_m[key],key,String(sp[2]))).str
-      else
-        str[h] = _subst(jl_to_m[key], key, str[h])
-      end =#
+    for key in keys(jl_to_m)
       str[h] = _subst(jl_to_m[key], key, str[h])
     end
   end

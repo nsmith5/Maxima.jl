@@ -32,9 +32,7 @@ for fun in simfun
   for T in ty
     quote
       function $fun(expr::$T)
-        mexpr = MExpr(expr)
-        out = mcall(MExpr($(string(fun))*"($mexpr)"))
-        convert($T, out)
+        convert($T, $fun(MExpr(expr)))
       end
     end |> eval
   end
@@ -167,14 +165,34 @@ Expand logarithm terms in an expression
 for t in ty
   quote
     function logexpand(expr::$t)
-      mexpr = MExpr(expr)
-      out = mcall(MExpr("$mexpr, logexpand=super"))
-      convert($t, out)
+      convert($t, logexpand(MExpr(expr)))
     end
   end |> eval
 end
-function logexpand(expr::MExpr)
-  out = mcall(MExpr("$expr, logexpand=super"))
+function logexpand(m::MExpr)
+  nsr = Array{Compat.String,1}(0)
+  sexpr = split(m).str
+  for h in 1:length(sexpr)
+    if contains(sexpr[h],":=")
+      sp = split(sexpr[h],":=")
+      push!(nsr,String(sp[1])*":="*string(sp[2] |> String |> MExpr |> logexpand))
+    elseif contains(sexpr[h],"block([],")
+      rp = replace(sexpr[h],"block([],","") |> chop
+      sp = split(rp,",")
+      ns = "block([],"
+      for u in 1:length(sp)
+        ns = ns*string(sp[u] |> String |> MExpr |> logexpand)
+      end
+      ns = ns*")"
+      push!(nsr,ns)
+    elseif contains(sexpr[h],":")
+      sp = split(sexpr[h],":")
+      push!(nsr,String(sp[1])*":"*string(sp[2] |> String |> MExpr |> parse))
+    else
+      push!(nsr,"$(sexpr[h]), logexpand=super" |> MExpr |> mcall)
+    end
+  end
+  return MExpr(nsr)
 end
 
 @doc """
@@ -358,12 +376,31 @@ julia> subst(:b, :a, :(a^2 + b^2))
 for t in ty
   quote
     function subst(a, b, expr::$t)
-      mexpr = MExpr(expr)
-      out = mcall(MExpr("subst($a, $b, $mexpr)"))
-      convert($t, out)
+      convert($t, subst(a,b,MExpr(expr)))
     end
   end |> eval
 end
-function subst(expr::MExpr)
-  out = mcall(MExpr("subst($a, $b, $expr)"))
+function subst(a, b, expr::MExpr)
+  str = split(expr).str
+  for h in 1:length(str)
+    if contains(str[h],":=")
+      sp = split(str[h],":=")
+      str[h] = String(str[1])*":="*(_subst(a,b,String(sp[2]))).str
+    elseif contains(str[h],"block([],")
+      rp = replace(str[h],"block([],","") |> chop
+      sp = split(rp,",")
+      ns = "block([],"
+      for u in 1:length(sp)
+        ns = ns*(_subst(a,b,String(sp[u]))).str
+      end
+      ns = ns*")"
+      str[h] = ns
+    elseif contains(str[h],":")
+      sp = split(str[h],":")
+      str[h] = String(sp[1])*":"*(_subst(a,b,String(sp[2]))).str
+    else
+      str[h] = _subst(a, b, str[h])
+    end
+  end
+  MExpr(str)
 end
