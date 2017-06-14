@@ -129,20 +129,16 @@ const m_to_jl = Dict("%e" => "e",
     "inf"   =>  "Inf",
     "minf"  =>  "-Inf")
 
-const m_to_jl_utf = Dict(":" => "=")
-
 const jl_to_m = Dict("e" => "%e",
     "eu" => "%e",
     "pi" => "%pi",
-    "π" => "pi",
+    "π" => "%pi",
     "γ" => "%gamma",
     "eulergamma" => "%gamma",
     "golden" => "%phi",
     "φ" => "%phi",
     "im" => "%i",
     "Inf" => "inf")
-
-const repmjl = Dict(m_to_jl...,m_to_jl_utf...)
 
 _subst(a, b, expr) = "subst($a, $b, '($expr))" |> MExpr |> mcall
 
@@ -185,11 +181,27 @@ julia> parse(m\"sin(%i*x)\")
 function parse(m::MExpr)
   pexpr = Array{Any,1}(0); sexpr = split(m).str
   for h in 1:length(sexpr)
-    for key in keys(repmjl)
-      sexpr[h] = replace(sexpr[h],key,repmjl[key])
+    for key in keys(m_to_jl)
+      sexpr[h] = replace(sexpr[h],key,m_to_jl[key])
       #sexpr[h] = _subst(m_to_jl[key], key, sexpr[h]).str[1]
     end
-    push!(pexpr,parse(sexpr[h]))
+    if contains(sexpr[h],":=")
+      sp = split(sexpr[h],":=")
+      push!(pexpr,Expr(:function,parse(sp[1]),sp[2] |> String |> MExpr |> parse))
+    elseif contains(sexpr[h],"block([],")
+      rp = replace(sexpr[h],"block([],","") |> chop
+      sp = split(rp,",")
+      ep = Array{Any,1}(length(sp))
+      for u in 1:length(sp)
+        ep[u] = sp[u] |> String |> MExpr |> parse
+      end
+      push!(pexpr,Expr(:block,ep...))
+    elseif contains(sexpr[h],":")
+      sp = split(sexpr[h],":")
+      push!(pexpr,Expr(:(=),parse(sp[1]),sp[2] |> String |> MExpr |> parse))
+    else
+      push!(pexpr,parse(sexpr[h]))
+    end
   end
   return length(pexpr) == 1 ? pexpr[1] : Expr(:block,pexpr...)
 end
