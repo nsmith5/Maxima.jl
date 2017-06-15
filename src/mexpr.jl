@@ -65,6 +65,8 @@ function show_expr(io::IO, expr::Expr)
             print(io,arg)
             i != endof(args) ? print(io, ", ") : print(io, ")")
         end
+    elseif expr.head == :line
+        nothing
     else
       error("Nested :$(expr.head) block structure not supported by Maxima.jl")
     end
@@ -78,7 +80,7 @@ function unparse(expr::Expr)
       show_expr(io,line)
       push!(str,takebuf_string(io))
     end
-    return str
+    return mtrim(str)
 	else
     show_expr(io, expr)
     return push!(str,Compat.String(io))
@@ -112,6 +114,14 @@ end
 *(x::MExpr,y::Compat.String) = MExpr(push!(deepcopy(x.str),y))
 *(x::Compat.String,y::MExpr) = MExpr(unshift!(deepcopy(y.str),x))
 *(x::MExpr,y::MExpr) = MExpr(vcat(x.str...,y.str...))
+
+function mtrim(m::Array{Compat.String,1})
+  n = Array{Compat.String,1}(0)
+  for h ∈ 1:length(m)
+    !isempty(m[h]) && push!(n,m[h])
+  end
+  return n
+end
 
 function split(m::MExpr); n = Array{Compat.String,1}(0)
   for h in 1:length(m.str)
@@ -209,7 +219,7 @@ end
 convert(::Type{MExpr}, m::MExpr) = m
 convert(::Type{Array{Compat.String,1}}, m::MExpr) = m.str
 convert(::Type{Compat.String}, m::MExpr) = join(m.str,"; ")
-convert{T}(::Type{T}, m::MExpr) = parse(m)
+convert{T}(::Type{T}, m::MExpr) = T <: Number ? eval(parse(m)) : parse(m)
 if VERSION < v"0.5.0"
     convert(::Type{UTF8String}, m::MExpr) = UTF8String(m.str)
     convert(::Type{ASCIIString}, m::MExpr) = ASCIIString(m.str)
