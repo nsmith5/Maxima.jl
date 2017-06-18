@@ -202,7 +202,7 @@ julia> parse(m\"sin(%i*x)\")
 """
 function parse(m::MExpr)
     pexpr = []; sexpr = split(m).str 
-    for i, subexpr in enumerate(sexpr)
+    for (i, subexpr) in enumerate(sexpr)
         for key in keys(m_to_jl)
             sexpr[i] = replace(subexpr, key, m_to_jl[key])
         end
