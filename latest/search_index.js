@@ -129,171 +129,171 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "lib/simplify.html#Base.expand-Tuple{String}",
+    "location": "lib/simplify.html#Base.expand",
     "page": "Simplification",
     "title": "Base.expand",
-    "category": "Method",
-    "text": "expand(expr)\n\nExpand expression. \n\nExamples\n\njulia> expand(m\"(a + b)^2\")\n \n                                 2            2\n                                b  + 2 a b + a\n\n\n\n\n"
+    "category": "Function",
+    "text": "expand(expr)\n\nExpand expression.\n\nExamples\n\njulia> expand(m\"(a + b)^2\")\n\n                                 2            2\n                                b  + 2 a b + a\n\n\n\n\n"
 },
 
 {
-    "location": "lib/simplify.html#Base.factor-Tuple{T}",
+    "location": "lib/simplify.html#Base.factor",
     "page": "Simplification",
     "title": "Base.factor",
-    "category": "Method",
-    "text": "factor{T}(expr::T)\n\nFactorize polynomial expression\n\nExamples\n\njulia> factor(:(x^2 + 2x + 1))\n:((x + 1) ^ 2)\n\njulia> factor(MExpr(\"a^2 - b^2\"))\n \n                                (a - b) (b + a)\n\n\n\n\n"
+    "category": "Function",
+    "text": "factor{T}(expr::T)\n\nFactorize polynomial expression\n\nExamples\n\njulia> factor(:(x^2 + 2x + 1))\n:((x + 1) ^ 2)\n\njulia> factor(MExpr(\"a^2 - b^2\"))\n\n                                (a - b) (b + a)\n\n\n\n\n"
 },
 
 {
-    "location": "lib/simplify.html#Base.float-Tuple{Union{Expr,Maxima.MExpr,String}}",
+    "location": "lib/simplify.html#Base.float",
     "page": "Simplification",
     "title": "Base.float",
-    "category": "Method",
-    "text": "float(expr)\n\nConvert rational numbers into floating point numbers in expression.\n\nExamples\n\njulia> float(m\"1/3*x\")\n \n                             0.3333333333333333 x\n\n\n\n\n"
+    "category": "Function",
+    "text": "float(expr)\n\nConvert rational numbers into floating point numbers in expression.\n\nExamples\n\njulia> float(m\"1/3*x\")\n\n                             0.3333333333333333 x\n\n\n\n\n"
 },
 
 {
-    "location": "lib/simplify.html#Maxima.demoivre-Tuple{T}",
+    "location": "lib/simplify.html#Maxima.demoivre",
     "page": "Simplification",
     "title": "Maxima.demoivre",
-    "category": "Method",
-    "text": "demoivre(expr)\n\nBreak exponential terms into hyperbolic and trigonometric functions. Roughly the  opposite in function to exponentialize\n\nExamples\n\njulia> demoivre(m\"exp(a + %i * b)\")\n \n                             a\n                           %e  (%i sin(b) + cos(b))\n\njulia> exponentialize(ans)\n \n                         %i b     - %i b     %i b     - %i b\n                    a  %e     + %e         %e     - %e\n                  %e  (----------------- + -----------------)\n                               2                   2\n\njulia> expand(ans)\n \n                                    %i b + a\n                                  %e\n\n\n\n\n"
+    "category": "Function",
+    "text": "demoivre(expr)\n\nBreak exponential terms into hyperbolic and trigonometric functions. Roughly the opposite in function to exponentialize\n\nExamples\n\njulia> demoivre(m\"exp(a + %i * b)\")\n\n                             a\n                           %e  (%i sin(b) + cos(b))\n\njulia> exponentialize(ans)\n\n                         %i b     - %i b     %i b     - %i b\n                    a  %e     + %e         %e     - %e\n                  %e  (----------------- + -----------------)\n                               2                   2\n\njulia> expand(ans)\n\n                                    %i b + a\n                                  %e\n\n\n\n\n"
 },
 
 {
-    "location": "lib/simplify.html#Maxima.exponentialize-Tuple{T}",
+    "location": "lib/simplify.html#Maxima.exponentialize",
     "page": "Simplification",
     "title": "Maxima.exponentialize",
-    "category": "Method",
-    "text": "exponentialize(expr)\n\nExpress expression in terms of exponents as much as possible\n\nExamples\n\njulia> exponentialize(m\"sin(x)\")\n \n                                   %i x     - %i x\n                             %i (%e     - %e      )\n                           - ----------------------\n                                       2\n\n\n\n\n"
+    "category": "Function",
+    "text": "exponentialize(expr)\n\nExpress expression in terms of exponents as much as possible\n\nExamples\n\njulia> exponentialize(m\"sin(x)\")\n\n                                   %i x     - %i x\n                             %i (%e     - %e      )\n                           - ----------------------\n                                       2\n\n\n\n\n"
 },
 
 {
-    "location": "lib/simplify.html#Maxima.gfactor-Tuple{T}",
+    "location": "lib/simplify.html#Maxima.gfactor",
     "page": "Simplification",
     "title": "Maxima.gfactor",
-    "category": "Method",
+    "category": "Function",
     "text": "gfactor{T}(expr::T)\n\nFactorize complex polynomial expression\n\nExamples\n\njulia> gfactor(:(z^2 + 2*im*z - 1))\n:((z + im) ^ 2)\n\n\n\n\n"
 },
 
 {
-    "location": "lib/simplify.html#Maxima.imagpart-Tuple{T}",
+    "location": "lib/simplify.html#Maxima.imagpart",
     "page": "Simplification",
     "title": "Maxima.imagpart",
-    "category": "Method",
+    "category": "Function",
     "text": "imagpart(expr)\n\nFind the imaginary part of a complex expression.\n\nExamples\n\njulia> realpart(MExpr(\"a + %i*b\"))\n\n                            b\n\n\n\n\n"
 },
 
 {
-    "location": "lib/simplify.html#Maxima.logcontract-Tuple{T}",
+    "location": "lib/simplify.html#Maxima.logcontract",
     "page": "Simplification",
     "title": "Maxima.logcontract",
-    "category": "Method",
+    "category": "Function",
     "text": "logcontract{T}(expr::T)\n\nContract logarithms in expression\n\n\n\n"
 },
 
 {
-    "location": "lib/simplify.html#Maxima.logexpand-Tuple{T}",
+    "location": "lib/simplify.html#Maxima.logexpand",
     "page": "Simplification",
     "title": "Maxima.logexpand",
-    "category": "Method",
+    "category": "Function",
     "text": "logexpand{T}(expr::T)\n\nExpand logarithm terms in an expression\n\n\n\n"
 },
 
 {
-    "location": "lib/simplify.html#Maxima.makefact-Tuple{T}",
+    "location": "lib/simplify.html#Maxima.makefact",
     "page": "Simplification",
     "title": "Maxima.makefact",
-    "category": "Method",
+    "category": "Function",
     "text": "makefact{T}(expr::T)\n\nConvert expression into factorial form.\n\n\n\n"
 },
 
 {
-    "location": "lib/simplify.html#Maxima.makegamma-Tuple{T}",
+    "location": "lib/simplify.html#Maxima.makegamma",
     "page": "Simplification",
     "title": "Maxima.makegamma",
-    "category": "Method",
+    "category": "Function",
     "text": "makegamma{T}(expr::T)\n\nConvert factorial to gamma functions in expression\n\n\n\n"
 },
 
 {
-    "location": "lib/simplify.html#Maxima.polarform-Tuple{T}",
+    "location": "lib/simplify.html#Maxima.polarform",
     "page": "Simplification",
     "title": "Maxima.polarform",
-    "category": "Method",
-    "text": "polarform(expr)\n\nPut a complex expression into polarform\n\nExamples\n\njulia> polarform(m\"a + %i*b\")\n \n                              2    2    %i atan2(b, a)\n                        sqrt(b  + a ) %e\n\n\n\n\n"
+    "category": "Function",
+    "text": "polarform(expr)\n\nPut a complex expression into polarform\n\nExamples\n\njulia> polarform(m\"a + %i*b\")\n\n                              2    2    %i atan2(b, a)\n                        sqrt(b  + a ) %e\n\n\n\n\n"
 },
 
 {
-    "location": "lib/simplify.html#Maxima.radcan-Tuple{T}",
+    "location": "lib/simplify.html#Maxima.radcan",
     "page": "Simplification",
     "title": "Maxima.radcan",
-    "category": "Method",
-    "text": "radcan{T}(expr::T)\n\nSimplify radicals in expression.\n\nExamples\n\njulia> radcan(:(sqrt(x/y)))\n:(sqrt(x)/sqrt(y))\n\njulia> radcan(m\"sqrt(x/y)\")\n \n                                    sqrt(x)\n                                    -------\n                                    sqrt(y)\n\n\n\n\n"
+    "category": "Function",
+    "text": "radcan{T}(expr::T)\n\nSimplify radicals in expression.\n\nExamples\n\njulia> radcan(:(sqrt(x/y)))\n:(sqrt(x)/sqrt(y))\n\njulia> radcan(m\"sqrt(x/y)\")\n\n                                    sqrt(x)\n                                    -------\n                                    sqrt(y)\n\n\n\n\n"
 },
 
 {
-    "location": "lib/simplify.html#Maxima.ratsimp-Tuple{T}",
+    "location": "lib/simplify.html#Maxima.ratsimp",
     "page": "Simplification",
     "title": "Maxima.ratsimp",
-    "category": "Method",
-    "text": "ratsimp{T}(expr::T)\n\nSimplify expression.\n\nExamples\n\njulia> ratsimp(\"a + b/c\")\n\"(a*c+b)/c\"\n\njulia> ratsimp(:(sin(asin(a + b/c))))\n:((a * c + b) / c)\n\njulia> ratsimp(m\"%e^log(x)\")\n \n                                       x\n\n\n\n"
+    "category": "Function",
+    "text": "ratsimp{T}(expr::T)\n\nSimplify expression.\n\nExamples\n\njulia> ratsimp(\"a + b/c\")\n\"(a*c+b)/c\"\n\njulia> ratsimp(:(sin(asin(a + b/c))))\n:((a * c + b) / c)\n\njulia> ratsimp(m\"%e^log(x)\")\n\n                                       x\n\n\n\n"
 },
 
 {
-    "location": "lib/simplify.html#Maxima.realpart-Tuple{T}",
+    "location": "lib/simplify.html#Maxima.realpart",
     "page": "Simplification",
     "title": "Maxima.realpart",
-    "category": "Method",
+    "category": "Function",
     "text": "realpart(expr)\n\nFind the real part of a complex expression\n\nExamples\n\njulia> realpart(MExpr(\"a + %i*b\"))\n\n                            a\n\n\n\n\n"
 },
 
 {
-    "location": "lib/simplify.html#Maxima.rectform-Tuple{T}",
+    "location": "lib/simplify.html#Maxima.rectform",
     "page": "Simplification",
     "title": "Maxima.rectform",
-    "category": "Method",
+    "category": "Function",
     "text": "rectform(expr)\n\nPut complex expression in rectangular form\n\nExamples\n\njulia> rectform(:(R*e^(im*θ)))\n:(R * im * sin(θ) + R * cos(θ))\n\n\n\n\n\n"
 },
 
 {
-    "location": "lib/simplify.html#Maxima.subst-Tuple{Any,Any,T}",
+    "location": "lib/simplify.html#Maxima.subst",
     "page": "Simplification",
     "title": "Maxima.subst",
-    "category": "Method",
+    "category": "Function",
     "text": "subst(a, b, expr)\n\nReplace a with b in expr.\n\nExamples\n\njulia> subst(:b, :a, :(a^2 + b^2))\n:(2 * b ^ 2)\n\n\n\n\n"
 },
 
 {
-    "location": "lib/simplify.html#Maxima.trigexpand-Tuple{T}",
+    "location": "lib/simplify.html#Maxima.trigexpand",
     "page": "Simplification",
     "title": "Maxima.trigexpand",
-    "category": "Method",
+    "category": "Function",
     "text": "trigexpand(expr)\n\nExpand out trig functions in expression\n\n\n\n"
 },
 
 {
-    "location": "lib/simplify.html#Maxima.trigrat-Tuple{T}",
+    "location": "lib/simplify.html#Maxima.trigrat",
     "page": "Simplification",
     "title": "Maxima.trigrat",
-    "category": "Method",
+    "category": "Function",
     "text": "trigrat(expr)\n\nConvert expression into a canonical trigonometric form\n\nExamples\n\njulia> trigrat(:(exp(im*x) + exp(-im*x)))\n:(2 * cos(x))\n\n\n\n\n"
 },
 
 {
-    "location": "lib/simplify.html#Maxima.trigreduce-Tuple{T}",
+    "location": "lib/simplify.html#Maxima.trigreduce",
     "page": "Simplification",
     "title": "Maxima.trigreduce",
-    "category": "Method",
+    "category": "Function",
     "text": "trigreduce(expr)\n\nContract trigonometric functions\n\n\n\n"
 },
 
 {
-    "location": "lib/simplify.html#Maxima.trigsimp-Tuple{T}",
+    "location": "lib/simplify.html#Maxima.trigsimp",
     "page": "Simplification",
     "title": "Maxima.trigsimp",
-    "category": "Method",
-    "text": "trigsimp{T}(expr::T)\n\nSimplify trigonometric expression\n\nExamples\n\njulia> trigsimp(m\"sin(x)^2 + cos(x)^2\")\n \n                                       1\n\n\n\n"
+    "category": "Function",
+    "text": "trigsimp{T}(expr::T)\n\nSimplify trigonometric expression\n\nExamples\n\njulia> trigsimp(m\"sin(x)^2 + cos(x)^2\")\n\n                                       1\n\n\n\n"
 },
 
 {
