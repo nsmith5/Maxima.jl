@@ -2,33 +2,33 @@
 #   Copyright (c) 2016 Nathan Smith
 
 const EOT = Char(4)					# end of transmission character
-const synerr = "incorrect syntax" 
-const maxerr = "-- an error" 
+const synerr = "incorrect syntax"
+const maxerr = "-- an error"
 
 
 immutable MaximaSession <: Base.AbstractPipe
-	
+
 	input::Pipe
 	output::Pipe
 	process::Base.Process
-	
+
 	function MaximaSession()
 		# If windows, executable is .bat
 		cmd = is_unix() ? `maxima --very-quiet` :
 			`maxima.bat --very-quiet`
-		
+
 		# Setup pipes and maxima process
 		input = Pipe()
 		output = Pipe()
 		process = spawn(cmd, (input, output, STDERR))
 
-		# Close the unneeded ends of Pipes	
+		# Close the unneeded ends of Pipes
 		close(input.out)
 		close(output.in)
-	
+
 		# Set display to 1-dimensionsal
 		write(input, "display2d: false\$")
-	
+
 		return new(input, output, process)
 	end
 end
@@ -45,7 +45,7 @@ end
 
 
 if VERSION < v"0.5.0"
-    
+
     function Base.write(ms::MaximaSession, input::UTF8String)
         write(ms.input, "$input;\n")
         write(ms.input, "print(ascii(4))\$")
@@ -60,6 +60,6 @@ end
 
 
 function Base.read(ms::MaximaSession)
-	(readuntil(ms.output, EOT) |> String 
-	                           |> str -> rstrip(str, EOT)) 
+	(readuntil(ms.output, EOT) |> Compat.String 
+	                           |> str -> rstrip(str, EOT))
 end

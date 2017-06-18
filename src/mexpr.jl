@@ -18,7 +18,9 @@ import Base: parse,
              convert,
              error,
              ==,
-             getindex
+             getindex,
+             *,
+             split
 
 
 type MaximaError <: Exception
@@ -42,24 +44,47 @@ isinfix(args) = args[1] in infix_ops && length(args) > 2
 show_expr(io::IO, ex) = print(io, ex)
 
 function show_expr(io::IO, expr::Expr)
-    if expr.head != :call
-        error("Block structure is not supported by Maxima.jl")
-    else
+    if expr.head == :call
         seperator = isinfix(expr.args) ? " $(expr.args[1]) " : ", "
-        !isinfix(expr.args) ? show_expr(io, expr.args[1]) : nothing
+        !isinfix(expr.args) && show_expr(io, expr.args[1])
         print(io, "(")
         args = expr.args[2:end]
         for (i, arg) in enumerate(args)
             show_expr(io, arg)
             i != endof(args) ? print(io, seperator) : print(io, ")")
         end
+    elseif expr.head == :(=)
+        show_expr(io,expr.args[1])
+        print(io,": ")
+        show_expr(io,expr.args[2])
+    elseif expr.head == :function
+        show_expr(io,expr.args[1])
+        print(io," := block([], ")
+        args = unparse(expr.args[2])
+        for (i, arg) in enumerate(args)
+            print(io,arg)
+            i != endof(args) ? print(io, ", ") : print(io, ")")
+        end
+    elseif expr.head == :line
+        nothing
+    else
+      error("Nested :$(expr.head) block structure not supported by Maxima.jl")
     end
 end
 
 function unparse(expr::Expr)
-	io = IOBuffer()
-	show_expr(io, expr)
-	return String(io)
+  str = Array{Compat.String,1}(0)
+	io = IOBuffer();
+  if expr.head == :block
+    for line ∈ expr.args
+      show_expr(io,line)
+      push!(str,takebuf_string(io))
+    end
+    return mtrim(str)
+	else
+    show_expr(io, expr)
+    return push!(str,Compat.String(io))
+  end
 end
 
 """
@@ -75,11 +100,35 @@ type MExpr <: Any
 str :: String
 """
 type MExpr
-	str::Compat.String
+	str::Array{Compat.String,1}
+  MExpr(m::Array{Compat.String,1}) = new(m)
 end
+MExpr(m::Array{SubString{Compat.String},1}) = MExpr(convert(Array{Compat.String,1},m))
+MExpr(str::Compat.String) = MExpr(push!(Array{Compat.String,1}(0),str))
+MExpr(m::Any) = MExpr("$m")
 
 macro m_str(str)
 	MExpr(str)
+end
+
+*(x::MExpr,y::Compat.String) = MExpr(push!(deepcopy(x.str),y))
+*(x::Compat.String,y::MExpr) = MExpr(unshift!(deepcopy(y.str),x))
+*(x::MExpr,y::MExpr) = MExpr(vcat(x.str...,y.str...))
+
+function mtrim(m::Array{Compat.String,1})
+  n = Array{Compat.String,1}(0)
+  for h ∈ 1:length(m)
+    !isempty(m[h]) && push!(n,m[h])
+  end
+  return n
+end
+
+function split(m::MExpr); n = Array{Compat.String,1}(0)
+  for h in 1:length(m.str)
+    p = split(replace(m.str[h],r"\$",";"),';')
+    for t in 1:length(p); push!(n,p[t]); end
+  end
+  return MExpr(n)
 end
 
 const m_to_jl = Dict("%e" => "e",
@@ -101,11 +150,7 @@ const jl_to_m = Dict("e" => "%e",
     "im" => "%i",
     "Inf" => "inf")
 
-function _subst(a, b, expr)
-    mstr = "subst($a, $b, '($expr))" |> MExpr
-	mstr = mcall(mstr)
-	return mstr.str
-end
+_subst(a, b, expr) = "subst($a, $b, '($expr))" |> MExpr |> mcall
 
 """
     MExpr(expr::Expr)
@@ -122,11 +167,13 @@ julia> MExpr(:(sin(x*im) + cos(y*φ)))
 """
 function MExpr(expr::Expr)
 	#str = "$expr"
-    str = unparse(expr)
+  str = unparse(expr)
+  for h in 1:length(str)
     for key in keys(jl_to_m)
-        str = _subst(jl_to_m[key], key, str)
+      str[h] = _subst(jl_to_m[key], key, str[h])
     end
-    MExpr(str)
+  end
+  return MExpr(str)
 end
 
 """
@@ -142,16 +189,37 @@ julia> parse(m\"sin(%i*x)\")
 ```
 """
 function parse(m::MExpr)
-    str = m.str
+  pexpr = Array{Any,1}(0); sexpr = split(m).str
+  for h in 1:length(sexpr)
     for key in keys(m_to_jl)
-        str = _subst(m_to_jl[key], key, str)
+      sexpr[h] = replace(sexpr[h],key,m_to_jl[key])
+      #sexpr[h] = _subst(m_to_jl[key], key, sexpr[h]).str[1]
     end
-    parse(str)
+    if contains(sexpr[h],":=")
+      sp = split(sexpr[h],":=")
+      push!(pexpr,Expr(:function,parse(sp[1]),sp[2] |> Compat.String |> MExpr |> parse))
+    elseif contains(sexpr[h],"block([],")
+      rp = replace(sexpr[h],"block([],","") |> chop
+      sp = split(rp,",")
+      ep = Array{Any,1}(length(sp))
+      for u in 1:length(sp)
+        ep[u] = sp[u] |> Compat.String |> MExpr |> parse
+      end
+      push!(pexpr,Expr(:block,ep...))
+    elseif contains(sexpr[h],":")
+      sp = split(sexpr[h],":")
+      push!(pexpr,Expr(:(=),parse(sp[1]),sp[2] |> Compat.String |> MExpr |> parse))
+    else
+      push!(pexpr,parse(sexpr[h]))
+    end
+  end
+  return length(pexpr) == 1 ? pexpr[1] : Expr(:block,pexpr...)
 end
 
-
-convert(::Type{Compat.String}, m::MExpr) = m.str
-convert(::Type{Expr}, m::MExpr) = parse(m)
+convert(::Type{MExpr}, m::MExpr) = m
+convert(::Type{Array{Compat.String,1}}, m::MExpr) = m.str
+convert(::Type{Compat.String}, m::MExpr) = join(m.str,"; ")
+convert{T}(::Type{T}, m::MExpr) = T <: Number ? eval(parse(m)) : parse(m)
 if VERSION < v"0.5.0"
     convert(::Type{UTF8String}, m::MExpr) = UTF8String(m.str)
     convert(::Type{ASCIIString}, m::MExpr) = ASCIIString(m.str)
@@ -176,20 +244,23 @@ julia> mcall(ans)
 ```
 """
 function mcall(m::MExpr)
-    write(ms, m.str)
+    write(ms, replace(convert(Compat.String,m),r";","; print(ascii(3))\$ "))
     output = read(ms)
     if contains(output, maxerr)
-		write(ms.input, "errormsg()\$")
-		write(ms.input, "print(ascii(4))\$")
-		message = read(ms)
-		throw(MaximaError(message))
-	elseif contains(output, synerr)
-		throw(MaximaSyntaxError(output))
-	else
-		output = replace(output, '\n', "")
-		output = replace(output, ' ', "")
-		return MExpr(output)
-	end
+		    write(ms.input, "errormsg()\$")
+		    write(ms.input, "print(ascii(4))\$")
+		    message = read(ms)
+		    throw(MaximaError(message))
+	  elseif contains(output, synerr)
+		    throw(MaximaSyntaxError(output))
+	  else
+		    sp = split(output, '\x03')
+        for k in 1:length(sp)
+          sp[k] = replace(sp[k], '\n', "")
+          sp[k] = replace(sp[k], ' ', "")
+        end
+        return MExpr(sp)
+    end
 end
 
 """
@@ -214,7 +285,16 @@ function mcall{T}(expr::T)
 end
 
 function ==(m::MExpr, n::MExpr)
-    return mcall(MExpr("is($m = $n)")) |> parse |> eval
+    r = split(m).str
+    s = split(n).str
+    l=length(r)
+    l!=length(s) && (return false)
+    b = true
+    for j ∈ 1:l
+        out = mcall("is($(r[j]) = $(s[j]))")
+        b &= !contains(out,"false")
+    end
+    return b
 end
 
 function getindex(m::MExpr, i)
