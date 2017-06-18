@@ -6,7 +6,7 @@ import Base: LineEdit, REPL, REPLCompletions
 ans = nothing
 
 """
-	finished(s)
+    finished(s)
 
 Examine the buffer in the repl to see if the input is complete
 """
@@ -14,15 +14,15 @@ function finished(s)
     str = Compat.String(LineEdit.buffer(s))
     if length(str) == 0
         return false
-	elseif str[end] == ';' || str[end] == '$'
-		return true
-	else
-		return false
-	end
+    elseif str[end] == ';' || str[end] == '$'
+        return true
+    else
+        return false
+    end
 end
 
 """
-	respond(repl, main)
+    respond(repl, main)
 
 Something dark and magic
 """
@@ -38,14 +38,14 @@ function respond(repl, main)
             input = string(input, tail)                     # add the tail
         end
         if !isempty(strip(input))
-		    try
+            try
                 global ans = MExpr(input[1:end-1]) |> mcall
                 REPL.reset(repl)
                 if input[end] == ';'
-		            REPL.print_response(repl, ans, nothing, true, Base.have_color)
-		        else
-		            REPL.print_response(repl, nothing, nothing, true, Base.have_color)
-		        end
+                    REPL.print_response(repl, ans, nothing, true, Base.have_color)
+                else
+                    REPL.print_response(repl, nothing, nothing, true, Base.have_color)
+                end
             catch err
                 REPL.reset(repl)
                 REPL.print_response(repl, err, catch_backtrace(), true, Base.have_color)
@@ -58,7 +58,7 @@ function respond(repl, main)
 end
 
 """
-	MaximaCompletionProvider
+    MaximaCompletionProvider
 
 Basic completion provider, just latex completions
 """
@@ -73,7 +73,7 @@ function LineEdit.complete_line(c::MaximaCompletionProvider, s)
     full = LineEdit.input_string(s)
     ret, range, should_complete = REPLCompletions.bslash_completions(full, endof(partial))[2]
     
-	if length(ret) > 0 && should_complete
+    if length(ret) > 0 && should_complete
         return ret, partial[range], true
     end
 
@@ -82,7 +82,7 @@ end
 
 function create_maxima_repl(repl, main)
     maxima_mode = LineEdit.Prompt(
-	    "maxima> ";
+        "maxima> ";
         prompt_prefix = Base.text_colors[:cyan],
         prompt_suffix = main.prompt_suffix,
         on_enter = finished,
