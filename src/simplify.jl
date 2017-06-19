@@ -13,56 +13,57 @@ if VERSION < v"0.6-"
 end
 
 simfun = [
-  :ratsimp,:radcan,
-  :factor,:gfactor,:expand,
-  :logcontract,
-  :makefact,:makegamma,
-  :trigsimp,:trigreduce,:trigexpand,:trigrat,
-  :rectform,:polarform,
-  :realpart,:imagpart,
-  :demoivre,
-  :exponentialize,
-  :float]
+    :ratsimp,:radcan,
+    :factor,:gfactor,:expand,
+    :logcontract,
+    :makefact,:makegamma,
+    :trigsimp,:trigreduce,:trigexpand,:trigrat,
+    :rectform,:polarform,
+    :realpart,:imagpart,
+    :demoivre,
+    :exponentialize,
+    :float
+]
 
 :(export $(simfun...)) |> eval
 
 ty = [:(Compat.String),:Expr]
 
 for fun in simfun
-  for T in ty
-    quote
-      function $fun(expr::$T)
-        convert($T, $fun(MExpr(expr)))
-      end
-    end |> eval
-  end
-  quote
-    function $fun(m::MExpr)
-      nsr = Array{Compat.String,1}(0)
-      sexpr = split(m).str
-      for h in 1:length(sexpr)
-        if contains(sexpr[h],":=")
-          sp = split(sexpr[h],":=")
-          push!(nsr,Compat.String(sp[1])*":="*string(sp[2]|>Compat.String|>MExpr|> $fun))
-        elseif contains(sexpr[h],"block([],")
-          rp = replace(sexpr[h],"block([],","") |> chop
-          sp = split(rp,",")
-          ns = "block([],"
-          for u in 1:length(sp)
-            ns = ns*string(sp[u] |> Compat.String |> MExpr |> $fun)
-          end
-          ns = ns*")"
-          push!(nsr,ns)
-        elseif contains(sexpr[h],":")
-          sp = split(sexpr[h],":")
-          push!(nsr,Compat.String(sp[1])*":"*string(sp[2]|>Compat.String|>MExpr|> $fun))
-        else
-          push!(nsr,$(string(fun))*"($(sexpr[h]))" |> MExpr |> mcall)
-        end
-      end
-      return MExpr(nsr)
+    for T in ty
+        quote
+            function $fun(expr::$T)
+                convert($T, $fun(MExpr(expr)))
+            end
+        end |> eval
     end
-  end |> eval
+    quote
+        function $fun(m::MExpr)
+            nsr = Compat.String[]
+            sexpr = split(m).str
+            for h in 1:length(sexpr)
+                if contains(sexpr[h], ":=")
+                    sp = split(sexpr[h], ":=")
+                    push!(nsr,Compat.String(sp[1]) * ":=" * string(sp[2] |> Compat.String |> MExpr |> $fun))
+                elseif contains(sexpr[h], "block([],")
+                    rp = replace(sexpr[h], "block([],", "") |> chop
+                    sp = split(rp, ",")
+                    ns = "block([],"
+                    for u in 1:length(sp)
+                        ns = ns * string(sp[u] |> Compat.String |> MExpr |> $fun)
+                    end
+                    ns = ns * ")"
+                    push!(nsr, ns)
+                elseif contains(sexpr[h], ":")
+                    sp = split(sexpr[h], ":")
+                    push!(nsr, Compat.String(sp[1]) * ":" * string(sp[2] |> Compat.String |> MExpr |> $fun))
+                else
+                    push!(nsr, $(string(fun)) * "($(sexpr[h]))" |> MExpr |> mcall)
+                end
+            end
+            return MExpr(nsr)
+        end
+    end |> eval
 end
 
 @doc """
@@ -163,36 +164,38 @@ Contract logarithms in expression
 Expand logarithm terms in an expression
 """ logexpand
 for t in ty
-  quote
-    function logexpand(expr::$t)
-      convert($t, logexpand(MExpr(expr)))
-    end
-  end |> eval
+    quote
+        function logexpand(expr::$t)
+            convert($t, logexpand(MExpr(expr)))
+        end
+    end |> eval
 end
+
+
 function logexpand(m::MExpr)
-  nsr = Array{Compat.String,1}(0)
-  sexpr = split(m).str
-  for h in 1:length(sexpr)
-    if contains(sexpr[h],":=")
-      sp = split(sexpr[h],":=")
-      push!(nsr,Compat.String(sp[1])*":="*string(sp[2]|>Compat.String|>MExpr|>logexpand))
-    elseif contains(sexpr[h],"block([],")
-      rp = replace(sexpr[h],"block([],","") |> chop
-      sp = split(rp,",")
-      ns = "block([],"
-      for u in 1:length(sp)
-        ns = ns*string(sp[u] |> Compat.String |> MExpr |> logexpand)
-      end
-      ns = ns*")"
-      push!(nsr,ns)
-    elseif contains(sexpr[h],":")
-      sp = split(sexpr[h],":")
-      push!(nsr,Compat.String(sp[1])*":"*string(sp[2]|>Compat.String|>MExpr|>logexpand))
-    else
-      push!(nsr,"$(sexpr[h]), logexpand=super" |> MExpr |> mcall)
+    nsr = Array{Compat.String,1}(0)
+    sexpr = split(m).str
+    for h in 1:length(sexpr)
+        if contains(sexpr[h], ":=")
+            sp = split(sexpr[h], ":=")
+            push!(nsr, Compat.String(sp[1])*":="*string(sp[2]|>Compat.String|>MExpr|>logexpand))
+        elseif contains(sexpr[h], "block([],")
+            rp = replace(sexpr[h], "block([],","") |> chop
+            sp = split(rp, ",")
+            ns = "block([],"
+            for u in 1:length(sp)
+                ns = ns*string(sp[u] |> Compat.String |> MExpr |> logexpand)
+            end
+            ns = ns * ")"
+            push!(nsr,ns)
+        elseif contains(sexpr[h],":")
+            sp = split(sexpr[h],":")
+            push!(nsr, Compat.String(sp[1])*":"*string(sp[2]|>Compat.String|>MExpr|>logexpand))
+        else
+            push!(nsr, "$(sexpr[h]), logexpand=super" |> MExpr |> mcall)
+        end
     end
-  end
-  return MExpr(nsr)
+    return MExpr(nsr)
 end
 
 @doc """
@@ -374,33 +377,35 @@ julia> subst(:b, :a, :(a^2 + b^2))
 ```
 """ subst
 for t in ty
-  quote
-    function subst(a, b, expr::$t)
-      convert($t, subst(a,b,MExpr(expr)))
-    end
-  end |> eval
+    quote
+        function subst(a, b, expr::$t)
+        convert($t, subst(a,b,MExpr(expr)))
+        end
+    end |> eval
 end
+
+
 function subst(a, b, expr::MExpr)
-  str = split(expr).str
-  for h in 1:length(str)
-    if contains(str[h],":=")
-      sp = split(str[h],":=")
-      str[h] = Compat.String(str[1])*":="*(_subst(a,b,Compat.String(sp[2]))).str
-    elseif contains(str[h],"block([],")
-      rp = replace(str[h],"block([],","") |> chop
-      sp = split(rp,",")
-      ns = "block([],"
-      for u in 1:length(sp)
-        ns = ns*(_subst(a,b,Compat.String(sp[u]))).str
-      end
-      ns = ns*")"
-      str[h] = ns
-    elseif contains(str[h],":")
-      sp = split(str[h],":")
-      str[h] = Compat.String(sp[1])*":"*(_subst(a,b,Compat.String(sp[2]))).str
-    else
-      str[h] = _subst(a, b, str[h])
+    str = split(expr).str
+    for h in 1:length(str)
+        if contains(str[h],":=")
+            sp = split(str[h],":=")
+            str[h] = Compat.String(str[1])*":="*(_subst(a,b,Compat.String(sp[2]))).str
+        elseif contains(str[h],"block([],")
+            rp = replace(str[h],"block([],","") |> chop
+            sp = split(rp,",")
+            ns = "block([],"
+            for u in 1:length(sp)
+                ns = ns * (_subst(a,b,Compat.String(sp[u]))).str
+            end
+            ns = ns * ")"
+            str[h] = ns
+        elseif contains(str[h], ":")
+            sp = split(str[h], ":")
+            str[h] = Compat.String(sp[1]) * ":" * (_subst(a,b,Compat.String(sp[2]))).str
+        else
+            str[h] = _subst(a, b, str[h])
+        end
     end
-  end
-  MExpr(str)
+    MExpr(str)
 end
