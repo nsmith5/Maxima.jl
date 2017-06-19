@@ -221,7 +221,7 @@ function parse(m::MExpr)
             sp = split(subexpr, ":")
             push!(pexpr,Expr(:(=),parse(sp[1]),sp[2] |> Compat.String |> MExpr |> parse))
         else
-            push!(pexpr,parse(sexpr[h]))
+            push!(pexpr,parse(sexpr[i]))
         end
     end
     return length(pexpr) == 1 ? pexpr[1] : Expr(:block, pexpr...)
