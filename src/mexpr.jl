@@ -77,7 +77,7 @@ function unparse(expr::Expr)
     str = Array{Compat.String,1}(0)
     io = IOBuffer();
     if expr.head == :block
-        for line ∈ expr.args
+        for line in expr.args
             show_expr(io,line)
             push!(str,takebuf_string(io))
         end
@@ -124,7 +124,7 @@ end
 
 function mtrim(m::Array{Compat.String,1})
     n = Array{Compat.String,1}(0)
-    for h ∈ 1:length(m)
+    for h in 1:length(m)
         !isempty(m[h]) && push!(n,m[h])
     end
     return n
@@ -305,7 +305,7 @@ function ==(m::MExpr, n::MExpr)
     l=length(r)
     l!=length(s) && (return false)
     b = true
-    for j ∈ 1:l
+    for j in 1:l
         out = mcall("is($(r[j]) = $(s[j]))")
         b &= !contains(out,"false")
     end
