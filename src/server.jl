@@ -6,7 +6,7 @@ const synerr = "incorrect syntax"
 const maxerr = "-- an error"
 
 
-struct MaximaSession <: Base.AbstractPipe
+immutable MaximaSession <: Base.AbstractPipe
 
     input::Pipe
     output::Pipe
