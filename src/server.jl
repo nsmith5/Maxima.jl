@@ -46,7 +46,7 @@ if VERSION < v"0.5"
         write(ms.input, "print(ascii(4))\$")
     end
 else 
-    function Base.write(ms::MaximaSession, input::AbstractString)
+    function Base.write(ms::MaximaSession, input::String)
         # The line break right ..v.. there is apparently very important...
         write(ms.input, "$input;\n")
         write(ms.input, "print(ascii(4))\$")

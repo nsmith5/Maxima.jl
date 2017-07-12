@@ -158,11 +158,12 @@ julia> expand(m\"(a + b)^2\")
 Contract logarithms in expression
 """ logcontract
 
-"""
+@doc """
     logexpand{T}(expr::T)
 
 Expand logarithm terms in an expression
 """ logexpand
+
 for t in ty
     quote
         function logexpand(expr::$t)
