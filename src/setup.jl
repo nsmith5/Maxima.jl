@@ -1,10 +1,10 @@
 #   This file is part of Maxima.jl. It is licensed under the MIT license
 #   Copyright (c) 2016 Nathan Smith
 
-Reset(;args::Cmd=``) = (kill(ms); Load(args=args))
+Reset(;args::String="") = (kill(ms); Load(args=args))
 __init__() = (Load(); atexit(() -> kill(ms)))
 
-function Load(;args::Cmd=``)
+function Load(;args::String="")
     try
         is_unix() ? (@compat readstring(`maxima --version`)) :
             @compat readstring(`maxima.bat --version`)
@@ -30,4 +30,5 @@ function Load(;args::Cmd=``)
     end
 
     mcall("1") # clears out any initial data
+    return nothing
 end
