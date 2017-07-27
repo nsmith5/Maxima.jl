@@ -30,4 +30,5 @@ function Load(;args::String="")
     end
 
     mcall("1") # clears out any initial data
+    return nothing
 end
