@@ -29,5 +29,5 @@ function Load(;args::String="")
         end
     end
 
-    mcall("1") # clears out any initial data
+    mcall("1"); nothing # clears out any initial data
 end
