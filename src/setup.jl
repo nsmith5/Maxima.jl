@@ -1,10 +1,10 @@
 #   This file is part of Maxima.jl. It is licensed under the MIT license
 #   Copyright (c) 2016 Nathan Smith
 
-Reset() = (kill(ms); Load())
+Reset(;ArgString="") = (kill(ms); Load(ArgString=""))
 __init__() = (Load(); atexit(() -> kill(ms)))
 
-function Load()
+function Load(;ArgString="")
     try
         Sys.isunix() ? (@compat readstring(`maxima --version`)) :
             @compat readstring(`maxima.bat --version`)
@@ -14,7 +14,7 @@ function Load()
 
     # Server setup
 
-    global ms = MaximaSession()	# Spin up a Maxima session
+    global ms = MaximaSession(ArgString="")	# Spin up a Maxima session
 
     # REPL setup
     repl_active = isdefined(Base, :active_repl)	# Is an active repl defined?
