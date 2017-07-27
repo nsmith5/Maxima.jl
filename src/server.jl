@@ -12,7 +12,7 @@ immutable MaximaSession <: Base.AbstractPipe
     output::Pipe
     process::Base.Process
 
-    function MaximaSession(;args::String="")
+    function MaximaSession(;args::Cmd=``)
         # If windows, executable is .bat
         cmd = is_unix() ? `maxima --very-quiet $args` :
             `maxima.bat --very-quiet $args`
