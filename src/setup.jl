@@ -1,10 +1,10 @@
 #   This file is part of Maxima.jl. It is licensed under the MIT license
 #   Copyright (c) 2016 Nathan Smith
 
-Reset(;args::String="") = (kill(ms); Load(args=args))
+Reset(;args::Cmd=``) = (kill(ms); Load(args=args))
 __init__() = (Load(); atexit(() -> kill(ms)))
 
-function Load(;args::String="")
+function Load(;args::Cmd=``)
     try
         is_unix() ? (@compat readstring(`maxima --version`)) :
             @compat readstring(`maxima.bat --version`)
