@@ -122,7 +122,18 @@ function repl_init(repl)
                     LineEdit.state(s, maxima_mode).input_buffer = buf
                 end
             else
-                LineEdit.edit_insert(s, ']')
+                if !isdefined(Main,:OhMyREPL)
+                    LineEdit.edit_insert(s, ']')
+                else
+                    if Main.OhMyREPL.BracketInserter.AUTOMATIC_BRACKET_MATCH[] &&
+                      !eof(LineEdit.buffer(s)) &&
+                      Main.OhMyREPL.BracketInserter.peek(LineEdit.buffer(s)) == ']'
+                        LineEdit.edit_move_right(LineEdit.buffer(s))
+                    else
+                        LineEdit.edit_insert(LineEdit.buffer(s), ']')
+                    end
+                    Main.OhMyREPL.Prompt.rewrite_with_ANSI(s)
+                end
             end
         end
     )
