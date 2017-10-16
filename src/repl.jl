@@ -109,12 +109,13 @@ function create_maxima_repl(repl, main)
 end
 
 function repl_init(repl)
-    mirepl = isdefined(repl, :mi) ? repl.mi : repl
-    main_mode = mirepl.interface.modes[1]
-    maxima_mode = create_maxima_repl(mirepl, main_mode)
-    push!(mirepl.interface.modes, maxima_mode)
+    try
+        mirepl = isdefined(repl, :mi) ? repl.mi : repl
+        main_mode = mirepl.interface.modes[1]
+        maxima_mode = create_maxima_repl(mirepl, main_mode)
+        push!(mirepl.interface.modes, maxima_mode)
 
-    const maxima_prompt_keymap = Dict{Any,Any}(
+        const maxima_prompt_keymap = Dict{Any,Any}(
         ']' => function (s,args...)
             if isempty(s) || position(LineEdit.buffer(s)) == 0
                 buf = copy(LineEdit.buffer(s))
@@ -136,8 +137,9 @@ function repl_init(repl)
                 end
             end
         end
-    )
+        )
 
-    main_mode.keymap_dict = LineEdit.keymap_merge(main_mode.keymap_dict, maxima_prompt_keymap);
+        main_mode.keymap_dict = LineEdit.keymap_merge(main_mode.keymap_dict, maxima_prompt_keymap);
+    end
     nothing
 end
