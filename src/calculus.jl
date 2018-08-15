@@ -186,7 +186,7 @@ julia> sum(m"1/n^2", :n, 1, "inf")
 ```
 """
 function sum(exp::T, k, start, finish) where T
-    sumexp = parse("sum($exp, $k, $start, $finish)")
+    sumexp = Meta.parse("sum($exp, $k, $start, $finish)")
     m = MExpr(sumexp)
     out = mcall(MExpr("$m, simpsum"))
     convert(T, out)

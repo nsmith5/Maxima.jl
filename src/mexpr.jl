@@ -49,7 +49,7 @@ function show_expr(io::IO, expr::Expr)
         args = expr.args[2:end]
         for (i, arg) in enumerate(args)
             show_expr(io, arg)
-            i != endof(args) ? print(io, seperator) : print(io, ")")
+            i != lastindex(args) ? print(io, seperator) : print(io, ")")
         end
     elseif expr.head == :(=)
         show_expr(io,expr.args[1])
@@ -72,7 +72,7 @@ end
 
 
 function unparse(expr::Expr)
-    str = Array{String,1}(0)
+    str = String[]
     io = IOBuffer();
     if expr.head == :block
         for line ∈ expr.args
@@ -82,7 +82,7 @@ function unparse(expr::Expr)
         return mtrim(str)
     else
         show_expr(io, expr)
-        return push!(str,String(io))
+        return push!(str,String(take!(copy(io))))
     end
 end
 
@@ -132,7 +132,7 @@ end
 function split(m::MExpr)
     n = String[]
     for i in 1:length(m.str)
-        p = split(replace(m.str[i], r"\$", ";"), ';')
+        p = split(replace(m.str[i], r"\$" => ";"), ';')
         for j in 1:length(p)
             push!(n, p[i])
         end
@@ -208,12 +208,12 @@ function parse(m::MExpr)
     pexpr = Any[]
     for subexpr in split(m).str
         for key in keys(m_to_jl)
-            subexpr = replace(subexpr, key, m_to_jl[key])
+            subexpr = replace(subexpr, key => m_to_jl[key])
         end
-        if contains(subexpr, ":=")
+        if occursin( ":=", subexpr)
             sp = split(subexpr, ":=")
             push!(pexpr, Expr(:function, parse(sp[1]), sp[2] |> String |> MExpr |> parse))
-        elseif contains(subexpr, "block([], ")
+        elseif occursin( "block([], ", subexpr)
             rp = replace(subexpr, "block([],", "") |> chop
             sp = split(rp, ",")
             ep = Vector{Any}(length(sp))
@@ -221,11 +221,11 @@ function parse(m::MExpr)
                 ep[j] = sp[j] |> String |> MExpr |> parse
             end
             push!(pexpr,Expr(:block,ep...))
-        elseif contains(subexpr, ":")
+        elseif occursin( ":", subexpr)
             sp = split(subexpr, ":")
             push!(pexpr, Expr(:(=), parse(sp[1]), sp[2] |> String |> MExpr |> parse))
         else
-            push!(pexpr, parse(subexpr))
+            push!(pexpr, Meta.parse(subexpr))
         end
     end
     return length(pexpr) == 1 ? pexpr[1] : Expr(:block, pexpr...)
@@ -307,7 +307,7 @@ function ==(m::MExpr, n::MExpr)
     b = true
     for j ∈ 1:l
         out = mcall("is($(r[j]) = $(s[j]))")
-        b &= !contains(out, "false")
+        b &= !occursin( "false", out)
     end
     return b
 end

@@ -42,10 +42,10 @@ for fun in simfun
             nsr = String[]
             sexpr = split(m).str
             for h in 1:length(sexpr)
-                if contains(sexpr[h], ":=")
+                if occursin( ":=", sexpr[h])
                     sp = split(sexpr[h], ":=")
                     push!(nsr,String(sp[1]) * ":=" * string(sp[2] |> String |> MExpr |> $fun))
-                elseif contains(sexpr[h], "block([],")
+                elseif occursin( "block([],", sexpr[h])
                     rp = replace(sexpr[h], "block([],", "") |> chop
                     sp = split(rp, ",")
                     ns = "block([],"
@@ -54,7 +54,7 @@ for fun in simfun
                     end
                     ns = ns * ")"
                     push!(nsr, ns)
-                elseif contains(sexpr[h], ":")
+                elseif occursin( ":", sexpr[h])
                     sp = split(sexpr[h], ":")
                     push!(nsr, String(sp[1]) * ":" * string(sp[2] |> String |> MExpr |> $fun))
                 else
@@ -173,13 +173,13 @@ end
 
 
 function logexpand(m::MExpr)
-    nsr = Array{String,1}(0)
+    nsr = String[]
     sexpr = split(m).str
     for h in 1:length(sexpr)
-        if contains(sexpr[h], ":=")
+        if occursin( ":=", sexpr[h])
             sp = split(sexpr[h], ":=")
             push!(nsr, String(sp[1])*":="*string(sp[2]|>String|>MExpr|>logexpand))
-        elseif contains(sexpr[h], "block([],")
+        elseif occursin( "block([],", sexpr[h])
             rp = replace(sexpr[h], "block([],","") |> chop
             sp = split(rp, ",")
             ns = "block([],"
@@ -188,7 +188,7 @@ function logexpand(m::MExpr)
             end
             ns = ns * ")"
             push!(nsr,ns)
-        elseif contains(sexpr[h],":")
+        elseif occursin(":", sexpr[h])
             sp = split(sexpr[h],":")
             push!(nsr, String(sp[1])*":"*string(sp[2]|>String|>MExpr|>logexpand))
         else
@@ -388,10 +388,10 @@ end
 function subst(a, b, expr::MExpr)
     str = split(expr).str
     for h in 1:length(str)
-        if contains(str[h],":=")
+        if occursin(":=", str[h])
             sp = split(str[h],":=")
             str[h] = String(str[1])*":="*(_subst(a,b,String(sp[2]))).str
-        elseif contains(str[h],"block([],")
+        elseif occursin("block([],", str[h])
             rp = replace(str[h],"block([],","") |> chop
             sp = split(rp,",")
             ns = "block([],"
@@ -400,7 +400,7 @@ function subst(a, b, expr::MExpr)
             end
             ns = ns * ")"
             str[h] = ns
-        elseif contains(str[h], ":")
+        elseif occursin( ":", str[h])
             sp = split(str[h], ":")
             str[h] = String(sp[1]) * ":" * (_subst(a,b,String(sp[2]))).str
         else
