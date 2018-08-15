@@ -50,7 +50,7 @@ function integrate(m::MExpr, s, lower, upper)
 end
 
 """
-    integrate{T}(f::T, x, a, b)
+    integrate(f::T, x, a, b) where T
 
 Evaluate the definite integral of ``f`` with respect to ``x`` from ``a`` to ``b``.
 
@@ -69,7 +69,7 @@ function risch(m::MExpr, var)
 end
 
 """
-    risch{T}(f::T, x)
+    risch(f::T, x) where T
 
 Compute the indefinite integral of ``f`` with respect to ``x`` using the Risch algorithm
 
@@ -86,7 +86,7 @@ function diff(m::MExpr, s)
 end
 
 """
-    diff{T}(f, x)
+    diff(f, x) where T
 
 Take the derivative of ``f`` with respect to ``x``
 
@@ -108,7 +108,7 @@ function diff(m::MExpr, s, order::Integer)
 end
 
 """
-    diff{T}(f, x, n)
+    diff(f, x, n) where T
 
 Take the nth order derivative of ``f`` with respect to ``x``.
 
@@ -127,7 +127,7 @@ function limit(m::MExpr, x, a)
 end
 
 """
-    limit{T}(f, x, a)
+    limit(f, x, a) where T
 
 Take the limit as ``x`` approaches ``a`` of ``f(x)``
 
@@ -142,7 +142,7 @@ function limit(exp::T, x, a) where T
 end
 
 """
-    limit{T}(f, x, a, side)
+    limit(f, x, a, side) where T
 
 Take the left or right sided limit as ``x`` approaches ``a`` of ``f(x)``.
 
@@ -166,7 +166,7 @@ function sum(m::MExpr, k, start, finish)
 end
 
 """
-    sum{T}(f::T, k, start, finish)
+    sum(f::T, k, start, finish) where T
 
 Compute the sum,
 
@@ -200,7 +200,7 @@ function taylor(m::MExpr, x, x0, order::Integer)
 end
 
 """
-    taylor{T}(f::T, x, x0, n)
+    taylor(f::T, x, x0, n) where T
 
 Taylor expand ``f(x)`` around ``x_0`` to nth order
 """
@@ -215,7 +215,7 @@ function product(m::MExpr, k, start, finish)
 end
 
 """
-    product{T}(f::T, k, start, finish)
+    product(f::T, k, start, finish) where T
 
 Compute the product,
 
@@ -247,7 +247,7 @@ function laplace(func::MExpr, oldvar, newvar)
 end
 
 """
-    laplace{T}(f::T, t, s)
+    laplace(f::T, t, s) where T
 
 Compute the Laplace transform of ``f(t)`` where ``s`` is the new variable.
 
@@ -265,7 +265,7 @@ function ilt(func::MExpr, oldvar, newvar)
 end
 
 """
-    ilt{T}(f::T, s, t)
+    ilt(f::T, s, t) where T
 
 Compute the inverse Laplace transform of ``f(s)``.
 
