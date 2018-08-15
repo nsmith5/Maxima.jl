@@ -72,7 +72,7 @@ end
 
 
 function unparse(expr::Expr)
-    str = Array{Compat.String,1}(0)
+    str = Array{String,1}(0)
     io = IOBuffer();
     if expr.head == :block
         for line ∈ expr.args
@@ -82,7 +82,7 @@ function unparse(expr::Expr)
         return mtrim(str)
     else
         show_expr(io, expr)
-        return push!(str,Compat.String(io))
+        return push!(str,String(io))
     end
 end
 
@@ -233,8 +233,8 @@ end
 
 
 convert(::Type{MExpr}, m::MExpr) = m
-convert(::Type{Array{Compat.String,1}}, m::MExpr) = m.str
-convert(::Type{Compat.String}, m::MExpr) = join(m.str, "; ")
+convert(::Type{Array{String,1}}, m::MExpr) = m.str
+convert(::Type{String}, m::MExpr) = join(m.str, "; ")
 convert(::Type{T}, m::MExpr) where T = T <: Number ? eval(parse(m)) : parse(m)
 
 

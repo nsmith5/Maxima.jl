@@ -4,9 +4,6 @@
 __precompile__()
 module Maxima
 
-using Compat
-import Compat.String
-
 include("server.jl")
 include("mexpr.jl")
 include("io.jl")

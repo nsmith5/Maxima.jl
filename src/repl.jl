@@ -11,7 +11,7 @@ ans = nothing
 Examine the buffer in the repl to see if the input is complete
 """
 function finished(s)
-    str = Compat.String(LineEdit.buffer(s))
+    str = String(LineEdit.buffer(s))
     if length(str) == 0
         return false
     elseif str[end] == ';' || str[end] == '$'
@@ -68,7 +68,7 @@ end
 
 function LineEdit.complete_line(c::MaximaCompletionProvider, s)
     buf = s.input_buffer
-    partial = Compat.String(buf.data[1:buf.ptr-1])
+    partial = String(buf.data[1:buf.ptr-1])
     # complete latex
     full = LineEdit.input_string(s)
     ret, range, should_complete = REPLCompletions.bslash_completions(full, endof(partial))[2]
@@ -77,7 +77,7 @@ function LineEdit.complete_line(c::MaximaCompletionProvider, s)
         return ret, partial[range], true
     end
 
-    return Compat.String[], 0:-1, false
+    return String[], 0:-1, false
 end
 
 function create_maxima_repl(repl, main)
