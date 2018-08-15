@@ -22,7 +22,7 @@ function integrate(m::MExpr, s)
 end
 
 """
-    integrate{T}(f::T, x)
+    integrate(f::T, x) where T
 
 Evaluate the indefinite integral
 ```math
@@ -39,7 +39,7 @@ julia> integrate(:(sin(x)), :x)
 
 * [`risch`](@refs Maxima.risch)
 """
-function integrate{T}(expr::T, s)
+function integrate(expr::T, s) where T
     m = MExpr(expr)
     out = integrate(m, s)
     convert(T, out)
@@ -58,7 +58,7 @@ Evaluate the definite integral of ``f`` with respect to ``x`` from ``a`` to ``b`
     \\int_a^b f(x) dx
 ```
 """
-function integrate{T}(expr::T, s, lower, upper)
+function integrate(expr::T, s, lower, upper) where T
     m = MExpr(expr)
     out = integrate(m, s, lower, upper)
     convert(T, out)
@@ -76,7 +76,7 @@ Compute the indefinite integral of ``f`` with respect to ``x`` using the Risch a
 ## See also
 * [`integrate`](@ref Maxima.integrate)
 """
-function risch{T}(exp::T, var)
+function risch(exp::T, var) where T
     m = MExpr(exp)
     convert(T, risch(m, var))
 end
@@ -94,7 +94,7 @@ Take the derivative of ``f`` with respect to ``x``
 \\frac{\\partial f(x, ...)}{\\partial x}
 ```
 """
-function diff{T}(exp::T, s)
+function diff(exp::T, s) where T
     m = MExpr(exp)
     out = diff(m, s)
     convert(T, out)
@@ -116,7 +116,7 @@ Take the nth order derivative of ``f`` with respect to ``x``.
 \\frac{\\partial^n f(x,...)}{\\partial x^n}
 ```
 """
-function diff{T}(exp::T, s, order::Integer)
+function diff(exp::T, s, order::Integer) where T
     m = MExpr(exp)
     out = diff(m, s, order)
     convert(T, out)
@@ -135,7 +135,7 @@ Take the limit as ``x`` approaches ``a`` of ``f(x)``
 lim_{x \\rightarrow a} f(x)
 ```
 """
-function limit{T}(exp::T, x, a)
+function limit(exp::T, x, a) where T
     m = MExpr(exp)
     out = limit(m, x, a)
     convert(T, out)
@@ -155,7 +155,7 @@ function limit(m::MExpr, x, a, side)
     MExpr("limit($m, $x, $a, $side)") |> mcall
 end
 
-function limit{T}(exp::T, x, a, side)
+function limit(exp::T, x, a, side) where T
     m = MExpr(exp)
     out = limit(m, x, a, side)
     convert(T, out)
@@ -185,7 +185,7 @@ julia> sum(m"1/n^2", :n, 1, "inf")
 
 ```
 """
-function sum{T}(exp::T, k, start, finish)
+function sum(exp::T, k, start, finish) where T
     sumexp = parse("sum($exp, $k, $start, $finish)")
     m = MExpr(sumexp)
     out = mcall(MExpr("$m, simpsum"))
@@ -204,7 +204,7 @@ end
 
 Taylor expand ``f(x)`` around ``x_0`` to nth order
 """
-function taylor{T}(exp::T, x, x0, order::Integer)
+function taylor(exp::T, x, x0, order::Integer) where T
     m = MExpr(exp)
     out = taylor(m, x, x0, order)
     convert(T, out)
@@ -224,7 +224,7 @@ Compute the product,
 ```
 simplifying the product if possible.
 """
-function product{T}(exp::T, k, start, finish)
+function product(exp::T, k, start, finish) where T
     sumexp = parse("product($exp, $k, $start, $finish)")
     convert(T, sumexp |> MExpr |> mcall)
 end
@@ -255,7 +255,7 @@ Compute the Laplace transform of ``f(t)`` where ``s`` is the new variable.
 \\mathcal{L}\\lbrace f \\rbrace (s) = \\int_0^\\infty f(t) e^{-st} dt
 ```
 """
-function laplace{T}(func::T, oldvar, newvar)
+function laplace(func::T, oldvar, newvar) where T
     m = MExpr(func)
     convert(T, "laplace($m, $oldvar, $newvar)" |> MExpr |> mcall)
 end
@@ -271,7 +271,7 @@ Compute the inverse Laplace transform of ``f(s)``.
 
 ``t`` is the new variable and ``s`` is the old variable.
 """
-function ilt{T}(func::T, oldvar, newvar)
+function ilt(func::T, oldvar, newvar) where T
     m = MExpr(func)
     convert(T, "ilt($m, $oldvar, $newvar)" |> MExpr |> mcall)
 end
