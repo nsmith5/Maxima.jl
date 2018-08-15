@@ -15,7 +15,7 @@ Right hand side of an equation.
 
 If `expr` is not an equation than `rhs` will return `0`
 """
-function rhs{T}(m::T)
+function rhs(m::T) where T
     return convert(T, rhs(MExpr(m)))
 end
 
@@ -30,9 +30,9 @@ Left hand side of an equation.
 
 If `expr` is not an equation then `lhs` will return `expr`
 """
-function lhs{T}(m::T)
+function lhs(m::T) where T
     return convert(T, lhs(MExpr(m)))
 end
 
 allroots(m::MExpr) = mcall(MExpr("rhs($m)"))
-allroots{T}(m::T) = convert(T, allroots(MExpr(m)))
+allroots(m::T) where T = convert(T, allroots(MExpr(m)))
