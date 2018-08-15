@@ -9,7 +9,7 @@ function rhs(m::MExpr)
 end
 
 """
-    rhs{T}(expr::T)
+    rhs(expr::T) where T
 
 Right hand side of an equation.
 
@@ -24,7 +24,7 @@ function lhs(m::MExpr)
 end
 
 """
-    lhs{T}(expr::T)
+    lhs(expr::T) where T
 
 Left hand side of an equation.
 

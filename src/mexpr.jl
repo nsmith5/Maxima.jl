@@ -278,7 +278,7 @@ end
 
 
 """
-	mcall{T}(expr::T)
+	mcall(expr::T) where T
 
 Evaluate a Julia expression or string using the Maxima interpretor and convert
 output back into the input type

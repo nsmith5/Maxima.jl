@@ -67,7 +67,7 @@ for fun in simfun
 end
 
 @doc """
-    ratsimp{T}(expr::T)
+    ratsimp(expr::T) where T
 
 Simplify expression.
 
@@ -87,7 +87,7 @@ julia> ratsimp(m\"%e^log(x)\")
 """ ratsimp
 
 @doc """
-    radcan{T}(expr::T)
+    radcan(expr::T) where T
 
 Simplify radicals in expression.
 
@@ -106,7 +106,7 @@ julia> radcan(m\"sqrt(x/y)\")
 """ radcan
 
 @doc """
-    factor{T}(expr::T)
+    factor(expr::T) where T
 
 Factorize polynomial expression
 
@@ -124,7 +124,7 @@ julia> factor(MExpr(\"a^2 - b^2\"))
 """ factor
 
 @doc """
-    gfactor{T}(expr::T)
+    gfactor(expr::T) where T
 
 Factorize complex polynomial expression
 
@@ -153,13 +153,13 @@ julia> expand(m\"(a + b)^2\")
 """ expand
 
 @doc """
-    logcontract{T}(expr::T)
+    logcontract(expr::T) where T
 
 Contract logarithms in expression
 """ logcontract
 
 """
-    logexpand{T}(expr::T)
+    logexpand(expr::T) where T
 
 Expand logarithm terms in an expression
 """ logexpand
@@ -199,19 +199,19 @@ function logexpand(m::MExpr)
 end
 
 @doc """
-    makefact{T}(expr::T)
+    makefact(expr::T) where T
 
 Convert expression into factorial form.
 """ makefact
 
 @doc """
-    makegamma{T}(expr::T)
+    makegamma(expr::T) where T
 
 Convert factorial to gamma functions in expression
 """ makegamma
 
 @doc """
-    trigsimp{T}(expr::T)
+    trigsimp(expr::T) where T
 
 Simplify trigonometric expression
 

@@ -12,7 +12,7 @@ string(m::MExpr) = convert(Compat.String, m)
 show(io::IO, m::MExpr) = print(io, convert(Compat.String, m))
 
 
-@compat function show(io::IO, ::MIME"text/plain", m::MExpr)
+function show(io::IO, ::MIME"text/plain", m::MExpr)
     input = "'(" * replace(convert(Compat.String, m), r";", ");\n'(") * ")"
     write(ms.input, "$(replace(input,r";","\$"))\$\n print(ascii(4))\$")
     out = (readuntil(ms.output, EOT) |> Compat.String
@@ -34,7 +34,7 @@ show(io::IO, m::MExpr) = print(io, convert(Compat.String, m))
 end
 
 
-@compat function show(io::IO, ::MIME"text/latex", m::MExpr)
+function show(io::IO, ::MIME"text/latex", m::MExpr)
     check = "'("*replace(convert(Compat.String, m), r";",")\$\n'(")*")"
     write(ms.input, "$check\$\n print(ascii(4))\$")
     out = (readuntil(ms.output, EOT) |> Compat.String
