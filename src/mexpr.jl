@@ -257,20 +257,20 @@ julia> mcall(ans)
 ```
 """
 function mcall(m::MExpr)
-    write(ms, replace(convert(String, m), r";", "; print(ascii(3))\$ "))
+    write(ms, replace(convert(String, m), r";" => "; print(ascii(3))\$ "))
     output = read(ms)
-    if contains(output, maxerr)
+    if occursin(maxerr, output)
             write(ms.input, "errormsg()\$")
             write(ms.input, "print(ascii(4))\$")
             message = read(ms)
             throw(MaximaError(message))
-    elseif contains(output, synerr)
+    elseif occursin(synerr, output)
         throw(MaximaSyntaxError(output))
     else
         sp = split(output, '\x03')
         for k in 1:length(sp)
-          sp[k] = replace(sp[k], '\n', "")
-          sp[k] = replace(sp[k], ' ', "")
+          sp[k] = replace(sp[k], '\n' => "")
+          sp[k] = replace(sp[k], ' ' => "")
         end
         return MExpr(sp)
     end

@@ -14,7 +14,7 @@ struct MaximaSession <: Base.AbstractPipe
 
     function MaximaSession(;args::Cmd=``)
         # If windows, executable is .bat
-        cmd = is_unix() ? `maxima --very-quiet $args` :
+        cmd = Sys.isunix() ? `maxima --very-quiet $args` :
             `maxima.bat --very-quiet $args`
 
         # Setup pipes and maxima process
