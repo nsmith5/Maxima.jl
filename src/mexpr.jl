@@ -1,7 +1,5 @@
 #   This file is part of Maxima.jl. It is licensed under the MIT license
 #   Copyright (c) 2016 Nathan Smith
-
-
 export MExpr,
        @m_str,
        parse,
@@ -23,15 +21,15 @@ import Base: parse,
              split
 
 
-type MaximaError <: Exception
-    errstr::Compat.String
+struct MaximaError <: Exception
+    errstr::String
 end
 
 Base.showerror(io::IO, err::MaximaError) = print(io, err.errstr)
 
 
-type MaximaSyntaxError <: Exception
-    errstr::Compat.String
+struct MaximaSyntaxError <: Exception
+    errstr::String
 end
 
 Base.showerror(io::IO, err::MaximaSyntaxError) = print(io, err.errstr)
@@ -101,14 +99,14 @@ type MExpr <: Any
 
 str :: String
 """
-type MExpr
-    str::Array{Compat.String,1}
-    MExpr(m::Array{Compat.String,1}) = new(m)
+struct MExpr
+    str::Vector{String}
+    MExpr(m::Vector{String}) = new(m)
 end
 
 
-MExpr(m::Array{SubString{Compat.String},1}) = MExpr(convert(Array{Compat.String,1},m))
-MExpr(str::Compat.String) = MExpr(push!(Array{Compat.String,1}(0),str))
+MExpr(m::Array{SubString{String},1}) = MExpr(convert(Array{String, 1}, m))
+MExpr(str::String) = MExpr(push!(String[], str))
 MExpr(m::Any) = MExpr("$m")
 
 
@@ -117,22 +115,22 @@ macro m_str(str)
 end
 
 
-*(x::MExpr,y::Compat.String) = MExpr(push!(deepcopy(x.str),y))
-*(x::Compat.String,y::MExpr) = MExpr(unshift!(deepcopy(y.str),x))
-*(x::MExpr,y::MExpr) = MExpr(vcat(x.str...,y.str...))
+*(x::MExpr, y::String) = MExpr(push!(deepcopy(x.str), y))
+*(x::String, y::MExpr) = MExpr(unshift!(deepcopy(y.str), x))
+*(x::MExpr, y::MExpr) = MExpr(vcat(x.str..., y.str...))
 
 
-function mtrim(m::Array{Compat.String,1})
-    n = Array{Compat.String,1}(0)
+function mtrim(m::Vector{String})
+    n = String[]
     for h ∈ 1:length(m)
-        !isempty(m[h]) && push!(n,m[h])
+        !isempty(m[h]) && push!(n, m[h])
     end
     return n
 end
 
 
 function split(m::MExpr)
-    n = Compat.String[]
+    n = String[]
     for i in 1:length(m.str)
         p = split(replace(m.str[i], r"\$", ";"), ';')
         for j in 1:length(p)
@@ -143,24 +141,28 @@ function split(m::MExpr)
 end
 
 
-const m_to_jl = Dict("%e" => "e",
-    "%pi"   =>  "π",
-    "%i"    =>  "im",
+const m_to_jl = Dict(
+    "%e"     => "e",
+    "%pi"    =>  "π",
+    "%i"     =>  "im",
     "%gamma" => "eulergamma",
-    "%phi"  =>  "φ",
-    "inf"   =>  "Inf",
-    "minf"  =>  "-Inf")
+    "%phi"   =>  "φ",
+    "inf"    =>  "Inf",
+    "minf"   =>  "-Inf"
+)
 
-const jl_to_m = Dict("e" => "%e",
-    "eu" => "%e",
-    "pi" => "%pi",
-    "π" => "%pi",
-    "γ" => "%gamma",
+const jl_to_m = Dict(
+    "e"          => "%e",
+    "eu"         => "%e",
+    "pi"         => "%pi",
+    "π"          => "%pi",
+    "γ"          => "%gamma",
     "eulergamma" => "%gamma",
-    "golden" => "%phi",
-    "φ" => "%phi",
-    "im" => "%i",
-    "Inf" => "inf")
+    "golden"     => "%phi",
+    "φ"          => "%phi",
+    "im"         => "%i",
+    "Inf"        => "inf"
+)
 
 _subst(a, b, expr) = "subst($a, $b, '($expr))" |> MExpr |> mcall
 
@@ -210,20 +212,20 @@ function parse(m::MExpr)
         end
         if contains(subexpr, ":=")
             sp = split(subexpr, ":=")
-            push!(pexpr, Expr(:function, parse(sp[1]),sp[2] |> Compat.String |> MExpr |> parse))
-        elseif contains(subexpr, "block([],")
+            push!(pexpr, Expr(:function, parse(sp[1]), sp[2] |> String |> MExpr |> parse))
+        elseif contains(subexpr, "block([], ")
             rp = replace(subexpr, "block([],", "") |> chop
             sp = split(rp, ",")
             ep = Vector{Any}(length(sp))
             for j in 1:length(sp)
-                ep[j] = sp[j] |> Compat.String |> MExpr |> parse
+                ep[j] = sp[j] |> String |> MExpr |> parse
             end
             push!(pexpr,Expr(:block,ep...))
         elseif contains(subexpr, ":")
             sp = split(subexpr, ":")
-            push!(pexpr,Expr(:(=),parse(sp[1]),sp[2] |> Compat.String |> MExpr |> parse))
+            push!(pexpr, Expr(:(=), parse(sp[1]), sp[2] |> String |> MExpr |> parse))
         else
-            push!(pexpr,parse(subexpr))
+            push!(pexpr, parse(subexpr))
         end
     end
     return length(pexpr) == 1 ? pexpr[1] : Expr(:block, pexpr...)
@@ -232,13 +234,9 @@ end
 
 convert(::Type{MExpr}, m::MExpr) = m
 convert(::Type{Array{Compat.String,1}}, m::MExpr) = m.str
-convert(::Type{Compat.String}, m::MExpr) = join(m.str,"; ")
-convert{T}(::Type{T}, m::MExpr) = T <: Number ? eval(parse(m)) : parse(m)
+convert(::Type{Compat.String}, m::MExpr) = join(m.str, "; ")
+convert(::Type{T}, m::MExpr) where T = T <: Number ? eval(parse(m)) : parse(m)
 
-if VERSION < v"0.5.0"
-    convert(::Type{UTF8String}, m::MExpr) = UTF8String(m.str)
-    convert(::Type{ASCIIString}, m::MExpr) = ASCIIString(m.str)
-end
 
 
 """
@@ -259,7 +257,7 @@ julia> mcall(ans)
 ```
 """
 function mcall(m::MExpr)
-    write(ms, replace(convert(Compat.String,m), r";", "; print(ascii(3))\$ "))
+    write(ms, replace(convert(String, m), r";", "; print(ascii(3))\$ "))
     output = read(ms)
     if contains(output, maxerr)
             write(ms.input, "errormsg()\$")
@@ -278,6 +276,7 @@ function mcall(m::MExpr)
     end
 end
 
+
 """
 	mcall{T}(expr::T)
 
@@ -294,23 +293,25 @@ julia> mcall(:(integrate(1/(1+x^2), x)))
 
 ```
 """
-function mcall{T}(expr::T)
+function mcall(expr::T) where T
     mexpr = MExpr(expr)
     return convert(T, mcall(mexpr))
 end
 
+
 function ==(m::MExpr, n::MExpr)
     r = split(m).str
     s = split(n).str
-    l=length(r)
-    l!=length(s) && (return false)
+    l = length(r)
+    l != length(s) && (return false)
     b = true
     for j ∈ 1:l
         out = mcall("is($(r[j]) = $(s[j]))")
-        b &= !contains(out,"false")
+        b &= !contains(out, "false")
     end
     return b
 end
+
 
 function getindex(m::MExpr, i)
     return MExpr("$m[$i]") |> mcall
