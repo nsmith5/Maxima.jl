@@ -6,7 +6,7 @@ const synerr = "incorrect syntax"
 const maxerr = "-- an error"
 
 
-immutable MaximaSession <: Base.AbstractPipe
+struct MaximaSession <: Base.AbstractPipe
 
     input::Pipe
     output::Pipe
@@ -20,7 +20,8 @@ immutable MaximaSession <: Base.AbstractPipe
         # Setup pipes and maxima process
         input = Pipe()
         output = Pipe()
-        process = spawn(cmd, (input, output, STDERR))
+        pipe = pipeline(cmd, stdin=input, stdout=output)
+        process = run(pipe, wait=false)
 
         # Close the unneeded ends of Pipes
         close(input.out)
@@ -44,22 +45,6 @@ function Base.write(ms::MaximaSession, input::Compat.String)
 end
 
 
-if VERSION < v"0.5.0"
-
-    function Base.write(ms::MaximaSession, input::UTF8String)
-        write(ms.input, "$input;\n")
-        write(ms.input, "print(ascii(4))\$")
-    end
-
-    function Base.write(ms::MaximaSession, input::ASCIIString)
-        write(ms.input, "$input;\n")
-        write(ms.input, "print(ascii(4))\$")
-    end
-
-end
-
-
 function Base.read(ms::MaximaSession)
-    (readuntil(ms.output, EOT) |> Compat.String 
-                               |> str -> rstrip(str, EOT))
+    readuntil(ms.output, EOT) |> Compat.String |> str -> rstrip(str, EOT)
 end

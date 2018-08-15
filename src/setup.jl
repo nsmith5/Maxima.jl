@@ -1,5 +1,7 @@
 #   This file is part of Maxima.jl. It is licensed under the MIT license
 #   Copyright (c) 2016 Nathan Smith
+using REPL
+
 
 Reset(;args::Cmd=``) = (kill(ms); Load(args=args))
 __init__() = (Load(); atexit(() -> kill(ms)))
@@ -24,7 +26,7 @@ function Load(;args::Cmd=``)
         repl_init(Base.active_repl)
     else # package is loaded from ~/.juliarc.jl
         atreplinit() do repl # check if OhMyREPL is loaded
-            !isdefined(Main,:OhMyREPL) && (repl.interface = Base.REPL.setup_interface(repl))
+            !isdefined(Main, :OhMyREPL) && (repl.interface = Base.REPL.setup_interface(repl))
             repl_init(Base.active_repl)
         end
     end
