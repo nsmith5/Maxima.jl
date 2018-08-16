@@ -5,13 +5,14 @@ import REPL
 
 ans = nothing
 
+
 """
     finished(s)
 
 Examine the buffer in the repl to see if the input is complete
 """
 function finished(s)
-    str = String(LineEdit.buffer(s))
+    str = String(take!(copy(LineEdit.buffer(s))))
     if length(str) == 0
         return false
     elseif str[end] == ';' || str[end] == '$'
@@ -115,7 +116,7 @@ function repl_init(repl)
     push!(mirepl.interface.modes, maxima_mode)
 
     maxima_prompt_keymap = Dict{Any,Any}(
-        ']' => function (s,args...)
+        ')' => function (s,args...)
             if isempty(s) || position(LineEdit.buffer(s)) == 0
                 buf = copy(LineEdit.buffer(s))
                 LineEdit.transition(s, maxima_mode) do
@@ -123,14 +124,14 @@ function repl_init(repl)
                 end
             else
                 if !isdefined(Main,:OhMyREPL)
-                    LineEdit.edit_insert(s, ']')
+                    LineEdit.edit_insert(s, ')')
                 else
                     if Main.OhMyREPL.BracketInserter.AUTOMATIC_BRACKET_MATCH[] &&
                         !eof(LineEdit.buffer(s)) &&
-                        Main.OhMyREPL.BracketInserter.peek(LineEdit.buffer(s)) == ']'
+                        Main.OhMyREPL.BracketInserter.peek(LineEdit.buffer(s)) == ')'
                         LineEdit.edit_move_right(LineEdit.buffer(s))
                     else
-                        LineEdit.edit_insert(LineEdit.buffer(s), ']')
+                        LineEdit.edit_insert(LineEdit.buffer(s), ')')
                     end
                     Main.OhMyREPL.Prompt.rewrite_with_ANSI(s)
                 end
