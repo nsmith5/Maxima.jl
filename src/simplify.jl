@@ -27,7 +27,7 @@ simfun = [
 
 :(export $(simfun...)) |> eval
 
-ty = [:(Compat.String),:Expr]
+ty = [:(String),:Expr]
 
 for fun in simfun
     for T in ty
@@ -39,24 +39,24 @@ for fun in simfun
     end
     quote
         function $fun(m::MExpr)
-            nsr = Compat.String[]
+            nsr = String[]
             sexpr = split(m).str
             for h in 1:length(sexpr)
-                if contains(sexpr[h], ":=")
+                if occursin( ":=", sexpr[h])
                     sp = split(sexpr[h], ":=")
-                    push!(nsr,Compat.String(sp[1]) * ":=" * string(sp[2] |> Compat.String |> MExpr |> $fun))
-                elseif contains(sexpr[h], "block([],")
+                    push!(nsr,String(sp[1]) * ":=" * string(sp[2] |> String |> MExpr |> $fun))
+                elseif occursin( "block([],", sexpr[h])
                     rp = replace(sexpr[h], "block([],", "") |> chop
                     sp = split(rp, ",")
                     ns = "block([],"
                     for u in 1:length(sp)
-                        ns = ns * string(sp[u] |> Compat.String |> MExpr |> $fun)
+                        ns = ns * string(sp[u] |> String |> MExpr |> $fun)
                     end
                     ns = ns * ")"
                     push!(nsr, ns)
-                elseif contains(sexpr[h], ":")
+                elseif occursin( ":", sexpr[h])
                     sp = split(sexpr[h], ":")
-                    push!(nsr, Compat.String(sp[1]) * ":" * string(sp[2] |> Compat.String |> MExpr |> $fun))
+                    push!(nsr, String(sp[1]) * ":" * string(sp[2] |> String |> MExpr |> $fun))
                 else
                     push!(nsr, $(string(fun)) * "($(sexpr[h]))" |> MExpr |> mcall)
                 end
@@ -67,7 +67,7 @@ for fun in simfun
 end
 
 @doc """
-    ratsimp{T}(expr::T)
+    ratsimp(expr::T) where T
 
 Simplify expression.
 
@@ -87,7 +87,7 @@ julia> ratsimp(m\"%e^log(x)\")
 """ ratsimp
 
 @doc """
-    radcan{T}(expr::T)
+    radcan(expr::T) where T
 
 Simplify radicals in expression.
 
@@ -106,7 +106,7 @@ julia> radcan(m\"sqrt(x/y)\")
 """ radcan
 
 @doc """
-    factor{T}(expr::T)
+    factor(expr::T) where T
 
 Factorize polynomial expression
 
@@ -124,7 +124,7 @@ julia> factor(MExpr(\"a^2 - b^2\"))
 """ factor
 
 @doc """
-    gfactor{T}(expr::T)
+    gfactor(expr::T) where T
 
 Factorize complex polynomial expression
 
@@ -153,13 +153,13 @@ julia> expand(m\"(a + b)^2\")
 """ expand
 
 @doc """
-    logcontract{T}(expr::T)
+    logcontract(expr::T) where T
 
 Contract logarithms in expression
 """ logcontract
 
 """
-    logexpand{T}(expr::T)
+    logexpand(expr::T) where T
 
 Expand logarithm terms in an expression
 """ logexpand
@@ -173,24 +173,24 @@ end
 
 
 function logexpand(m::MExpr)
-    nsr = Array{Compat.String,1}(0)
+    nsr = String[]
     sexpr = split(m).str
     for h in 1:length(sexpr)
-        if contains(sexpr[h], ":=")
+        if occursin( ":=", sexpr[h])
             sp = split(sexpr[h], ":=")
-            push!(nsr, Compat.String(sp[1])*":="*string(sp[2]|>Compat.String|>MExpr|>logexpand))
-        elseif contains(sexpr[h], "block([],")
+            push!(nsr, String(sp[1])*":="*string(sp[2]|>String|>MExpr|>logexpand))
+        elseif occursin( "block([],", sexpr[h])
             rp = replace(sexpr[h], "block([],","") |> chop
             sp = split(rp, ",")
             ns = "block([],"
             for u in 1:length(sp)
-                ns = ns*string(sp[u] |> Compat.String |> MExpr |> logexpand)
+                ns = ns*string(sp[u] |> String |> MExpr |> logexpand)
             end
             ns = ns * ")"
             push!(nsr,ns)
-        elseif contains(sexpr[h],":")
+        elseif occursin(":", sexpr[h])
             sp = split(sexpr[h],":")
-            push!(nsr, Compat.String(sp[1])*":"*string(sp[2]|>Compat.String|>MExpr|>logexpand))
+            push!(nsr, String(sp[1])*":"*string(sp[2]|>String|>MExpr|>logexpand))
         else
             push!(nsr, "$(sexpr[h]), logexpand=super" |> MExpr |> mcall)
         end
@@ -199,19 +199,19 @@ function logexpand(m::MExpr)
 end
 
 @doc """
-    makefact{T}(expr::T)
+    makefact(expr::T) where T
 
 Convert expression into factorial form.
 """ makefact
 
 @doc """
-    makegamma{T}(expr::T)
+    makegamma(expr::T) where T
 
 Convert factorial to gamma functions in expression
 """ makegamma
 
 @doc """
-    trigsimp{T}(expr::T)
+    trigsimp(expr::T) where T
 
 Simplify trigonometric expression
 
@@ -388,21 +388,21 @@ end
 function subst(a, b, expr::MExpr)
     str = split(expr).str
     for h in 1:length(str)
-        if contains(str[h],":=")
+        if occursin(":=", str[h])
             sp = split(str[h],":=")
-            str[h] = Compat.String(str[1])*":="*(_subst(a,b,Compat.String(sp[2]))).str
-        elseif contains(str[h],"block([],")
+            str[h] = String(str[1])*":="*(_subst(a,b,String(sp[2]))).str
+        elseif occursin("block([],", str[h])
             rp = replace(str[h],"block([],","") |> chop
             sp = split(rp,",")
             ns = "block([],"
             for u in 1:length(sp)
-                ns = ns * (_subst(a,b,Compat.String(sp[u]))).str
+                ns = ns * (_subst(a,b,String(sp[u]))).str
             end
             ns = ns * ")"
             str[h] = ns
-        elseif contains(str[h], ":")
+        elseif occursin( ":", str[h])
             sp = split(str[h], ":")
-            str[h] = Compat.String(sp[1]) * ":" * (_subst(a,b,Compat.String(sp[2]))).str
+            str[h] = String(sp[1]) * ":" * (_subst(a,b,String(sp[2]))).str
         else
             str[h] = _subst(a, b, str[h])
         end

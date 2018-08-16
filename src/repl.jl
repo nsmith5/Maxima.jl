@@ -1,9 +1,10 @@
 #   This file is part of Maxima.jl. It is licensed under the MIT license
 #   Copyright (c) 2016 Nathan Smith
-
-import Base: LineEdit, REPL, REPLCompletions
+import REPL: LineEdit, REPLCompletions
+import REPL
 
 ans = nothing
+
 
 """
     finished(s)
@@ -11,7 +12,7 @@ ans = nothing
 Examine the buffer in the repl to see if the input is complete
 """
 function finished(s)
-    str = Compat.String(LineEdit.buffer(s))
+    str = String(take!(copy(LineEdit.buffer(s))))
     if length(str) == 0
         return false
     elseif str[end] == ';' || str[end] == '$'
@@ -62,13 +63,13 @@ end
 
 Basic completion provider, just latex completions
 """
-type MaximaCompletionProvider <: LineEdit.CompletionProvider
+mutable struct MaximaCompletionProvider <: LineEdit.CompletionProvider
     r::REPL.LineEditREPL
 end
 
 function LineEdit.complete_line(c::MaximaCompletionProvider, s)
     buf = s.input_buffer
-    partial = Compat.String(buf.data[1:buf.ptr-1])
+    partial = String(buf.data[1:buf.ptr-1])
     # complete latex
     full = LineEdit.input_string(s)
     ret, range, should_complete = REPLCompletions.bslash_completions(full, endof(partial))[2]
@@ -77,7 +78,7 @@ function LineEdit.complete_line(c::MaximaCompletionProvider, s)
         return ret, partial[range], true
     end
 
-    return Compat.String[], 0:-1, false
+    return String[], 0:-1, false
 end
 
 function create_maxima_repl(repl, main)
@@ -109,14 +110,13 @@ function create_maxima_repl(repl, main)
 end
 
 function repl_init(repl)
-    try
-        mirepl = isdefined(repl, :mi) ? repl.mi : repl
-        main_mode = mirepl.interface.modes[1]
-        maxima_mode = create_maxima_repl(mirepl, main_mode)
-        push!(mirepl.interface.modes, maxima_mode)
+    mirepl = isdefined(repl, :mi) ? repl.mi : repl
+    main_mode = mirepl.interface.modes[1]
+    maxima_mode = create_maxima_repl(mirepl, main_mode)
+    push!(mirepl.interface.modes, maxima_mode)
 
-        const maxima_prompt_keymap = Dict{Any,Any}(
-        ']' => function (s,args...)
+    maxima_prompt_keymap = Dict{Any,Any}(
+        ')' => function (s,args...)
             if isempty(s) || position(LineEdit.buffer(s)) == 0
                 buf = copy(LineEdit.buffer(s))
                 LineEdit.transition(s, maxima_mode) do
@@ -124,22 +124,20 @@ function repl_init(repl)
                 end
             else
                 if !isdefined(Main,:OhMyREPL)
-                    LineEdit.edit_insert(s, ']')
+                    LineEdit.edit_insert(s, ')')
                 else
                     if Main.OhMyREPL.BracketInserter.AUTOMATIC_BRACKET_MATCH[] &&
-                      !eof(LineEdit.buffer(s)) &&
-                      Main.OhMyREPL.BracketInserter.peek(LineEdit.buffer(s)) == ']'
+                        !eof(LineEdit.buffer(s)) &&
+                        Main.OhMyREPL.BracketInserter.peek(LineEdit.buffer(s)) == ')'
                         LineEdit.edit_move_right(LineEdit.buffer(s))
                     else
-                        LineEdit.edit_insert(LineEdit.buffer(s), ']')
+                        LineEdit.edit_insert(LineEdit.buffer(s), ')')
                     end
                     Main.OhMyREPL.Prompt.rewrite_with_ANSI(s)
                 end
             end
         end
-        )
-
-        main_mode.keymap_dict = LineEdit.keymap_merge(main_mode.keymap_dict, maxima_prompt_keymap);
-    end
+    )
+    main_mode.keymap_dict = LineEdit.keymap_merge(main_mode.keymap_dict, maxima_prompt_keymap);
     nothing
 end

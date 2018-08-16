@@ -1,13 +1,13 @@
 #   This file is part of Maxima.jl. It is licensed under the MIT license
 #   Copyright (c) 2016 Nathan Smith
+import REPL
 
 Reset(;args::Cmd=``) = (kill(ms); Load(args=args))
 __init__() = (Load(); atexit(() -> kill(ms)))
 
 function Load(;args::Cmd=``)
     try
-        is_unix() ? (@compat readstring(`maxima --version`)) :
-            @compat readstring(`maxima.bat --version`)
+        Sys.isunix() ? read(`maxima --version`, String) : read(`maxima.bat --version`, String)
     catch err
         error("Looks like Maxima is either not installed or not in the path")
     end
@@ -24,7 +24,7 @@ function Load(;args::Cmd=``)
         repl_init(Base.active_repl)
     else # package is loaded from ~/.juliarc.jl
         atreplinit() do repl # check if OhMyREPL is loaded
-            !isdefined(Main,:OhMyREPL) && (repl.interface = Base.REPL.setup_interface(repl))
+            !isdefined(Main, :OhMyREPL) && (repl.interface = REPL.setup_interface(repl))
             repl_init(Base.active_repl)
         end
     end

@@ -22,7 +22,7 @@ function kwarg_convert(kwarg)
         for thing in kwarg[2]
             str = str*" $thing,"
         end
-    elseif isa(kwarg[2], Compat.String)
+    elseif isa(kwarg[2], String)
         str = str*" \"$(kwarg[2])\","
     else
         str = str*" $(kwarg[2]),"

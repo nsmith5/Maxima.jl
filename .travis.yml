@@ -8,30 +8,21 @@ os:
   - osx
 
 julia:
-  - 0.4
-  - 0.5
-  - 0.6
-  - nightly
+  - 0.7
+  - 1.0.0
 
 notifications:
   email: false
 
 before_install:
   - if [[ "$TRAVIS_OS_NAME" == "osx"   ]]; then brew update                    ; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx"   ]]; then brew tap homebrew/science      ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx"   ]]; then brew tap brewsci/science       ; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx"   ]]; then brew install maxima            ; fi
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get update -qq        ; fi
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install -y maxima ; fi
-
-# uncomment the following lines to override the default test script
-#script:
-#  - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
-#  - julia -e 'Pkg.clone(pwd()); Pkg.build("Maxima"); Pkg.test("Maxima"; coverage=true)'
 
 after_success:
   # push coverage results to Coveralls
-  - julia -e 'cd(Pkg.dir("Maxima")); Pkg.add("Coverage"); using Coverage; Coveralls.submit(Coveralls.process_folder())'
+  - julia -e 'using Pkg; cd(Pkg.dir("Maxima")); Pkg.add("Coverage"); using Coverage; Coveralls.submit(Coveralls.process_folder())'
   # push coverage results to Codecov
-  - julia -e 'cd(Pkg.dir("Maxima")); Pkg.add("Coverage"); using Coverage; Codecov.submit(Codecov.process_folder())'
-  - julia -e 'Pkg.add("Documenter")'
-  - julia -e 'cd(Pkg.dir("Maxima")); include(joinpath("docs", "make.jl"))'
+  - julia -e 'using Pkg; cd(Pkg.dir("Maxima")); Pkg.add("Coverage"); using Coverage; Codecov.submit(Codecov.process_folder())'
+  - julia -e 'using Pkg; Pkg.add("Documenter")'
+  - julia -e 'using Pkg; cd(Pkg.dir("Maxima")); include(joinpath("docs", "make.jl"))'
