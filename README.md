@@ -26,7 +26,7 @@ alternative to proprietary software such as Mathematica, Maple and others.
 
 ## Installation
 
-Maxima.jl can be installed using the Julia package manager. Maxima.jl currently supports version of Julia >= v0.4.0.
+Maxima.jl can be installed using the Julia package manager. Maxima.jl currently supports version of Julia >= v0.7.0.
 
 ```julia
 julia> Pkg.add("Maxima")
