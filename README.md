@@ -1,3 +1,7 @@
+> Hi! Nathan here, maintainer of Maxima.jl. I'm not using Julia much these days, so I'm actively on the 
+> search for maintainers for this project. If you like Maxima.jl and have an interest in submitting some
+> changes or maintaining the project ping me!
+
 <p align="center">
   <img src="./docs/src/assets/logo.png" alt="Maxima.jl"/>
 </p>
