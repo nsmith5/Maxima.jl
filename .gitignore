@@ -2,4 +2,8 @@
 *.jl.*.cov
 *.jl.mem
 docs/build
+
+# Editor cruft
 .vscode
+*.swp
+
