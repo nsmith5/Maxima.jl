@@ -4,13 +4,8 @@
 export subst,
        logexpand
 
-import Base: expand,
-             diff,
+import Base: diff,
              float
-
-if VERSION < v"0.6-"
-    import Base: factor
-end
 
 simfun = [
     :ratsimp,:radcan,
