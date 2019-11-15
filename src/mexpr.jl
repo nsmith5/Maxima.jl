@@ -142,18 +142,17 @@ end
 
 
 const m_to_jl = Dict(
-    "%e"     => "e",
-    "%pi"    =>  "π",
-    "%i"     =>  "im",
+    "%e"     => "ℯ",
+    "%pi"    => "π",
+    "%i"     => "im",
     "%gamma" => "eulergamma",
-    "%phi"   =>  "φ",
-    "inf"    =>  "Inf",
-    "minf"   =>  "-Inf"
+    "%phi"   => "φ",
+    "inf"    => "Inf",
+    "minf"   => "-Inf"
 )
 
 const jl_to_m = Dict(
-    "e"          => "%e",
-    "eu"         => "%e",
+    "ℯ"          => "%e",
     "pi"         => "%pi",
     "π"          => "%pi",
     "γ"          => "%gamma",
