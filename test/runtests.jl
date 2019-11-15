@@ -12,6 +12,10 @@ using Test
 @test MExpr(:(100x)) == m"100 * x"
 @test MExpr(:(-im)) == m"-%i"
 
+# Julia special constant replacement
+@test mcall(:(ℯ^(im * π))) == -1
+@test mcall(:(e^(im * π))) != -1  # We no longer support 'e' as euler number in Julia >= 1.0
+
 # Calculus tests
 @test integrate(:(sin(x)), :x) == :(-cos(x))
 @test integrate("exp(-x^2)", "x", "minf", "inf") == "sqrt(%pi)"
@@ -46,7 +50,7 @@ end
 @test logexpand(m"log(x/y)") == m"log(x) - log(y)"
 @test trigsimp(m"sin(x)^2 + cos(x)^2") |> parse == 1
 @test trigrat(MExpr(:(exp(im*x) + exp(-im*x)))) == MExpr(:(2 * cos(x)))
-@test rectform(:(R*e^(im*theta))) == :(im * R * sin(theta) + R * cos(theta))
+@test rectform(:(R*ℯ^(im*theta))) == :(im * R * sin(theta) + R * cos(theta))
 @test polarform(m"a + %i*b") == m"sqrt(a^2 + b^2)*exp(%i * atan2(b, a))"
 @test realpart(m"a + %i*b") |> parse == :a
 @test imagpart(m"a + %i*b") |> parse == :b
