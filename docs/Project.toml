@@ -1,0 +1,3 @@
+[deps]
+Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
+Maxima = "e6386f5f-9a8a-5a5d-a605-d2d61207ca5a"
