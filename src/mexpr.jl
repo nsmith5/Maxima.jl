@@ -134,7 +134,7 @@ function split(m::MExpr)
     for i in 1:length(m.str)
         p = split(replace(m.str[i], r"\$" => ";"), ';')
         for j in 1:length(p)
-            push!(n, p[i])
+            push!(n, p[j])
         end
     end
     return MExpr(n)
