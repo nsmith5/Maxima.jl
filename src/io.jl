@@ -14,7 +14,6 @@ show(io::IO, m::MExpr) = print(io, convert(String, m))
 
 function show(io::IO, ::MIME"text/plain", m::MExpr)
     input = "'(" * replace(convert(String, m), r";" => ");\n'(") * ")"
-    println(input)
     write(ms.input, "$(replace(input, r";" => "\$"))\$\n print(ascii(4))\$")
     out = (readuntil(ms.output, EOT) |> String
                                      |> str -> rstrip(str, EOT))
