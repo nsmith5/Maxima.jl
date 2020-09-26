@@ -106,7 +106,14 @@ end
 
 
 MExpr(m::Array{SubString{String},1}) = MExpr(convert(Array{String, 1}, m))
-MExpr(str::String) = MExpr(push!(String[], str))
+# MExpr(str::String) = MExpr(push!(String[], str))
+function MExpr(str::String)
+    if str[end] in ";\$"
+        return MExpr(push!(String[], str[1:end-1]))
+    else
+        return MExpr(push!(String[], str))
+    end
+end
 MExpr(m::Any) = MExpr("$m")
 
 
@@ -134,7 +141,7 @@ function split(m::MExpr)
     for i in 1:length(m.str)
         p = split(replace(m.str[i], r"\$" => ";"), ';')
         for j in 1:length(p)
-            push!(n, p[i])
+            push!(n, p[j])
         end
     end
     return MExpr(n)
